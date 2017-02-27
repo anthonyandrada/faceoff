@@ -1,0 +1,41 @@
+body {
+    background: url(images/bg1.jpg) no-repeat center center fixed;
+    color: azure;
+}
+
+#form{
+    width: 40%;
+    height: 400px;
+    margin: 100px auto;
+    margin-top: 150px;
+    text-align: center;
+    padding: 100px 50px 50px 50px;
+    border: none;
+    border-radius: 5px;
+    background: #143653dd;
+}
+
+input[type="text"], input[type="password"] {
+    height: 30px;
+    font-size: 20px;
+    margin-bottom: 20px;
+}
+
+.submitbtn {
+    padding: 15px 20px;
+    background-color: coral;
+    color: azure;
+    border: none;
+    border-radius: 5px;
+}
+
+a {
+    color: azure;
+    font-family: sans-serif;
+    margin-top: 20px;
+}
+
+a:hover {
+    font-weight: bold;
+    color: coral;
+}
