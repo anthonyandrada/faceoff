@@ -1,38 +1,60 @@
 #!/usr/bin/python
-# Import modules for CGI handling 
-import cgi, cgitb, psycopg2
+
+# Import modules for CGI handling, timestamp 
+import cgi, cgitb, datetime
+# Import modules for AES encryption
 from Crypto.Cipher import AES
 from aes import AESCipher
-cgitb.enable(display=0, logdir='/cgi-logs', context=5, format='hmtl')
+# Import modules for getting IP
+from urllib2 import urlopen
+from PIL.ImageCms import createProfile
+
+# CGI traceback
+cgitb.enable(display=0, logdir='/cgi-logs', context=5, format='html')
+
 # Create instance of FieldStorage 
 form = cgi.FieldStorage() 
-# Get data from fields
-if 'username' not in form:
-    print "<H1>Error</H1>"
-    print "Please enter a username."
-    return
-if 'password' not in form:
-    print "<H1>Error</H1>"
-    print "Please enter a password."
-    return
-username = form.getvalue('username')
-conn = psycopg2.connect('dbname=cs160 user=postgres password = student')
-cur = conn.cursor()
-cur.execute('SELECT COUNT(*) FROM profile WHERE username = %s', username)
-result = 
+
+# Get name
 first_name = form.getvalue('first_name', '')
 last_name  = form.getvalue('last_name', '')
-password = AESCipher.encrypt(form.getvalue('password'))
-
-conn.commit()
-cur.close()
-conn.close()
+name = first_name + " " + last_name
+# HTML code
 print "Content-type:text/html\r\n\r\n"
 print "<html>"
 print "<head>"
-print "<title>Registration</title>"
+print "<title>New User Registration - {name}</title>"
 print "</head>"
 print "<body>"
-print "<h2>Hello %s %s</h2>" % (first_name, last_name)
+
+if 'username' not in form:
+    print "<h1>Error!</h1>"
+    print "Please enter a username."
+    return
+if 'password' not in form:
+    print "<h1>Error!</h1>"
+    print "Please enter a password."
+    return
+
+# Get data from field
+username = form.getvalue('username')
+password = psycopg2.Binary(AESCipher.encrypt(form.getvalue('password')))
+last_login = str(datetime.datetime.now()).split('.')[0]
+ip = urlopen('http://ip.42.pl/raw').read()
+
+p = createProfile(username, password, first_name, last_name, last_login, ip)
+p.connect()
+if p.check_username() == True:
+    print "Username available."
+    if p.register_user() == True:
+        print "User profile registered."
+    else:
+        print "Failed to register profile."
+else:
+    print "Error! Username already taken."
+    return
+p.disconnect()
+
+#close HTML
 print "</body>"
 print "</html>"
