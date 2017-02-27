@@ -25,9 +25,9 @@ password = form.getvalue('password')
 last_login = str(datetime.datetime.now()).split('.')[0]
 ip = urlopen('http://ip.42.pl/raw').read()
 p = createProfile(username, password, first_name, last_name, last_login, ip)
-#p.connect()
+p.connect()
 p.register_user()
-#p.disconnect()
+p.disconnect()
 # HTML code
 print "Content-type:text/html\r\n\r\n"
 print '<html>'
@@ -35,6 +35,8 @@ print '<head>'
 print '<title>New User Registration - %s</title>' % name
 print '</head>'
 print '<body>'
+print '<h1>Registered User: </br></h1>'
+print '<h2>Username: %s </br>Password: %s </br>First Name: %s </br>Last Name: %s </br>Last Login: %s </br>IP: %s</h2>' % (username, password, first_name, last_name, last_login, ip)
 print '</body>'
 print '</html>'
 
