@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 # Import modules for CGI handling, timestamp 
-import cgi, cgitb, datetime
+import cgi, cgitb, datetime, os
 from createProfile import createProfile
 # Import modules for AES encryption
 from Crypto.Cipher import AES
@@ -10,7 +10,7 @@ from aes import AESCipher
 from urllib2 import urlopen
 
 # CGI traceback
-cgitb.enable(display=0, logdir='/cgi-logs', context=5, format='html')
+cgitb.enable(display=1, logdir='/cgi-logs', context=5, format='html')
 
 # Create instance of FieldStorage 
 form = cgi.FieldStorage() 
@@ -23,7 +23,7 @@ name = first_name + " " + last_name
 username = form.getvalue('username')
 password = form.getvalue('password')
 last_login = str(datetime.datetime.now()).split('.')[0]
-ip = urlopen('http://ip.42.pl/raw').read()
+ip = os.environ["REMOTE_ADDR"]
 p = createProfile(username, password, first_name, last_name, last_login, ip)
 p.connect()
 p.register_user()
