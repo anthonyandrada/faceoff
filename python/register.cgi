@@ -33,9 +33,11 @@ ip = os.environ["REMOTE_ADDR"]
 
 # PostgreSQL function to write profile to database
 p = createProfile(username, password, first_name, last_name, last_login, ip)
-p.connect()
-p.register_user()
-p.disconnect()
+if p.check_username():
+    p.register_user()
+    message = '<h1>Registered User: </br></h1><h2>Username: %s </br>Password: %s </br>First Name: %s </br>Last Name: %s </br>Last Login: %s </br>IP: %s</h2>' % (username, password, first_name, last_name, last_login, ip)
+else:
+    message = '<h1>Error: Username in use.</h1>'
 
 # HTML code
 print "Content-type:text/html\r\n\r\n"
@@ -44,8 +46,7 @@ print '<head>'
 print '<title>New User Registration - %s</title>' % name
 print '</head>'
 print '<body>'
-print '<h1>Registered User: </br></h1>'
-print '<h2>Username: %s </br>Password: %s </br>First Name: %s </br>Last Name: %s </br>Last Login: %s </br>IP: %s</h2>' % (username, password, first_name, last_name, last_login, ip)
+print message
 print '</body>'
 print '</html>'
 
