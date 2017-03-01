@@ -15,21 +15,28 @@ cgitb.enable(display=1, logdir='/cgi-logs', context=5, format='html')
 # Create instance of FieldStorage 
 form = cgi.FieldStorage() 
 
-# Get name
+# Get name from form data
 first_name = form.getvalue('first_name', '')
 last_name  = form.getvalue('last_name', '')
 name = first_name + " " + last_name
-# Get data from field
+# Get username from form data
 username = form.getvalue('username')
+# open encryption key file
 with open('/usr/lib/cgi-bin/key/aes.key', 'r') as file:
     e = AESCipher(file.read())
+# pass password from form data to encryption function
 password = e.encrypt(form.getvalue('password'))
+# read current datetime stamp, strip milliseconds
 last_login = str(datetime.datetime.now()).split('.')[0]
+# fetch client IP address
 ip = os.environ["REMOTE_ADDR"]
+
+# PostgreSQL function to write profile to database
 p = createProfile(username, password, first_name, last_name, last_login, ip)
 p.connect()
 p.register_user()
 p.disconnect()
+
 # HTML code
 print "Content-type:text/html\r\n\r\n"
 print '<html>'
