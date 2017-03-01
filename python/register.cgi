@@ -21,7 +21,9 @@ last_name  = form.getvalue('last_name', '')
 name = first_name + " " + last_name
 # Get data from field
 username = form.getvalue('username')
-password = form.getvalue('password')
+with open('/usr/lib/cgi-bin/key/aes.key', 'r') as file:
+    e = AESCipher(file.read())
+password = e.encrypt(form.getvalue('password'))
 last_login = str(datetime.datetime.now()).split('.')[0]
 ip = os.environ["REMOTE_ADDR"]
 p = createProfile(username, password, first_name, last_name, last_login, ip)
