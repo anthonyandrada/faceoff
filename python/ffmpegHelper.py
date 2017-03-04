@@ -31,5 +31,5 @@ def extractFrames(vidPath):
     subprocess.check_output(makeFolder)
     subprocess.check_output(command)
 
-print getVideoMetada('a.mp4')
-extractFrames('a.mp4')
+#print getVideoMetada('a.mp4')
+#extractFrames('a.mp4')
