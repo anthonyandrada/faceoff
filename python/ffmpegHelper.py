@@ -30,6 +30,13 @@ def extractFrames(vidPath):
     command = ['ffmpeg', '-v', 'quiet', '-i', vidPath, './{}/frame%04d.png'.format(folder), '-hide_banner']
     subprocess.check_output(makeFolder)
     subprocess.check_output(command)
+    return
+                            
+def mergePics(avgFPS, folder):
+    command = ['ffmpeg', '-framerate', avgFPS, '-i', './{}/frame%04d.png'.format(folder), 'output.mp4']
+    subprocess.check_output(command)
+    return
 
-#print getVideoMetada('a.mp4')
-#extractFrames('a.mp4')
+# print getMetadata('a.mp4')
+# extractFrames('a.mp4')
+# mergePics('14', 'vid123456');
