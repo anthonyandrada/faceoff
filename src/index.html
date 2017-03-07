@@ -11,6 +11,7 @@
 </head>
 <body>
     <div id="form">
+        
         <form method="post" action="http://faceoff.ddns.net/cgi-bin/login.cgi" enctype="application/x-www-form-urlencoded">
             <div class="form-input">
                 <label>Username</label><br/>
@@ -18,9 +19,9 @@
                 <label>Password</label><br/>
                 <input type="password" id="password" name="password" /><br/>
             </div>
-                <input type="submit" class="submitbtn" value="login" /><br/>
-                <a href="index.html">Forgot Password?</a><br/>
-                <a href="register.html">Register</a>
+            <button type="button" class="submitbtn" onclick="location.href='register.html'">New User</button>
+                <input type="submit" class="submitbtn" value="Login" /><br/>
+                <br/><a href="index.html">Forgot Password?</a><br/>
         </form>
     </div>
 </body>
