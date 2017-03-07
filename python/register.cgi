@@ -47,6 +47,7 @@ print '<title>New User Registration - %s</title>' % name
 print '</head>'
 print '<body>'
 print message
+print '<h2><a href="index.html">Login</a></h2>'
 print '</body>'
 print '</html>'
 
