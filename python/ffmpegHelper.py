@@ -23,17 +23,16 @@ def getMetadata(vidPath):
     result = [height, width, int(totalFrames), float(duration), eval(avgFPS)]
     return result
 
-def extractFrames(vidPath):
-    uid = 123456 #fake UID
+def extractFrames(vidPath, uid, vid):
     folder = 'vid{}'.format(uid)
     makeFolder = ['mkdir', '-p', folder]
-    command = ['ffmpeg', '-v', 'quiet', '-i', vidPath, './{}/frame%05.png'.format(folder), '-hide_banner']
+    command = ['ffmpeg', '-v', 'quiet', '-i', vidPath, './{}/{}.%d.png'.format(folder, vid), '-hide_banner']
     subprocess.check_output(makeFolder)
     subprocess.check_output(command)
     return
                             
 def mergePics(avgFPS, folder):
-    command = ['ffmpeg', '-framerate', avgFPS, '-i', './{}/frame%05d.png'.format(folder), 'output.mp4']
+    command = ['ffmpeg', '-framerate', avgFPS, '-i', './{}/{}.%d.png'.format(folder, vid), 'output.mp4']
     subprocess.check_output(command)
     return
 
