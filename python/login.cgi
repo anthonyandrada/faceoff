@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 # Import modules for CGI handling
-import cgi, cgitb, datetime, os
+import cgi, cgitb, datetime, os, stringScrub
 # Import modules for AES encryption
 from Crypto.Cipher import AES
 from aes import AESCipher
@@ -14,7 +14,7 @@ cgitb.enable(display=1, logdir='/cgi-logs', context=5, format='html')
 # Create instance of FieldStorage 
 form = cgi.FieldStorage()
 
-username = form.getvalue('username')
+username = scrub(form.getvalue('username'))
 # open encryption key file
 with open('/usr/lib/cgi-bin/key/aes.key', 'r') as file:
     e = AESCipher(file.read())
@@ -26,7 +26,7 @@ with psycopg2.connect("dbname='cs160' user='postgres' host='localhost' password=
 except psycopg2.Error as e:
     message = "<h1>Error: Username doesn't exist.</h1>"
 else:
-    if form.getvalue('password') == e.decrypt(result[0]):
+    if scrub(form.getvalue('password')) == e.decrypt(result[0]):
         message = '<h1>User %s logged in.</h1>' % (username)
         # fetch client IP address
         ip = os.environ["REMOTE_ADDR"]

@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 # Import modules for CGI handling, timestamp 
-import cgi, cgitb, datetime, os
+import cgi, cgitb, datetime, os, stringScrub
 from createProfile import createProfile
 # Import modules for AES encryption
 from Crypto.Cipher import AES
@@ -16,8 +16,8 @@ cgitb.enable(display=1, logdir='/cgi-logs', context=5, format='html')
 form = cgi.FieldStorage() 
 
 # Get name from form data
-first_name = form.getvalue('first_name', '')
-last_name  = form.getvalue('last_name', '')
+first_name = scrub(form.getvalue('first_name', ''))
+last_name  = scrub(form.getvalue('last_name', ''))
 name = first_name + " " + last_name
 # Get username from form data
 username = form.getvalue('username')
@@ -25,7 +25,7 @@ username = form.getvalue('username')
 with open('/usr/lib/cgi-bin/key/aes.key', 'r') as file:
     e = AESCipher(file.read())
 # pass password from form data to encryption function
-password = e.encrypt(form.getvalue('password'))
+password = e.encrypt(scrub(form.getvalue('password')))
 # read current datetime stamp, strip milliseconds
 last_login = str(datetime.datetime.now()).split('.')[0]
 # fetch client IP address
