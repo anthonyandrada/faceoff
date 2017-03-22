@@ -6,5 +6,5 @@ Created on Mar 13, 2017
 import re
 
 def scrub(string)
-    string = re.sub("[$;<>'?\"/\\]", '', string)
+    string = re.sub("[$;<>\[\]'?\"/\\]", '', string)
     return string
