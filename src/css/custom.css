@@ -1,0 +1,113 @@
+.navbar {
+    background-image:-webkit-linear-gradient(#faa123, #f89406 60%, #e48806);
+    margin-bottom: 0;
+    border-radius: 0;
+}
+body{
+    background:#ffffff;
+}
+.form-body{
+    background:#dfdfdf;
+    padding:20px;
+    color: cornflowerblue;
+}
+
+.panel-main{
+	padding-top:20px;
+}
+
+.nav-tabs {
+    border-bottom: none !important;
+}
+
+.nav-tabs>li{
+    width:50%;
+	color:#222222 !important;
+}
+
+.nav-tabs>li.active>a, .nav-tabs>li.active>a:hover, .nav-tabs>li.active>a:focus {
+    color: #fff;
+    border: none !important;
+    border-bottom-color: transparent;
+	border-radius:none !important;
+}
+.nav-tabs>li>a {
+    color: cornflowerblue;
+    margin-right: 2px;
+    line-height: 1.5;
+    border: none !important;
+    border-radius:none !important;
+	text-transform:uppercase;
+	font-size:16px;
+}
+
+.form input[type=text], input[type=password], input[type=file]{
+    font-size:13px;
+	padding:10px;
+	border:1px solid#ccc;
+	outline:none;
+	width:100%;
+	margin:8px 0;
+	
+}
+.form button{
+	background:#49afe4;
+	color:#fff;
+	padding:10px 25px;
+	font-size:14px;
+	margin-top:5px;	
+}
+.form button:hover{
+	background:#22a0e2;
+	color:#fff;	
+}
+.form p{
+    color: black;
+    font-size:13px;
+    padding-top:10px;
+}
+
+input::-webkit-input-placeholder {
+    color: gainsboro !important;
+    font-weight: bold;
+    font-size: 120%; 
+    }
+
+    input:-moz-placeholder { /* Firefox 18- */
+    color: gainsboro !important;
+    font-weight: bold;
+    font-size: 120%; 
+}
+
+    input::-moz-placeholder {  /* Firefox 19+ */
+    color: gainsboro !important;
+    font-weight: bold;
+    font-size: 120%; 
+}
+
+    input:-ms-input-placeholder {  
+    color: gainsboro !important;
+    font-weight: bold;
+    font-size: 120%; 
+}
+
+/* layout.css Style */
+.upload-drop-zone {
+  height: 150px;
+  border-width: 2px;
+  margin-bottom: 20px;
+}
+
+/* skin.css Style*/
+.upload-drop-zone {
+  color: #ccc;
+  border-style: dashed;
+  border-color: #ccc;
+  line-height: 150px;
+  font-size: 200%;
+  text-align: center
+}
+.upload-drop-zone.drop {
+  color: #222;
+  border-color: #222;
+}
