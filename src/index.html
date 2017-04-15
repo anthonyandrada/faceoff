@@ -1,28 +1,90 @@
-<!doctype html>
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+        <title>Face Off - CS160 Project Website</title>
+        <!-- Bootstrap -->
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <link href="css/custom.css" rel="stylesheet">
+    </head>
+    <body>
+        <!-- Nav bar -->
+        <nav class="navbar navbar-inverse">
+            <div class="container">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="#">FACE OFF</a>
+                </div>
 
-<html>
-<head>
-    <meta charset="utf-8">
-    <title>FaceOff Login Page</title>
-    <link rel="stylesheet" href="styles.css">
-    <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
-    <script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
-    <script src="main.js"></script>
-</head>
-<body>
-    <div id="form">
-        
-        <form method="post" action="http://faceoff.ddns.net/cgi-bin/login.cgi" enctype="application/x-www-form-urlencoded">
-            <div class="form-input">
-                <label>Username</label><br/>
-                <input type="text" id="username" name="username" /><br/>
-                <label>Password</label><br/>
-                <input type="password" id="password" name="password" /><br/>
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-right">
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Menu <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="#">Action</a></li>
+                                <li><a href="#">Action</a></li>
+                                <li role="separator" class="divider"></li>
+                                <li><a href="#">Action</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div><!-- /.navbar-collapse -->
+            </div><!-- /.container-fluid -->
+        </nav>
+
+        <!-- jumbotron -->
+        <div class="jumbotron text-center">
+            <div class="container">
+                <h1>Face Off CS160 Project</h1>
+                <p>Welcome to Face Off, our CS160 group project website. Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah </p>
             </div>
-            <button type="button" class="submitbtn" onclick="location.href='register.html'">New User</button>
-                <input type="submit" class="submitbtn" value="Login" /><br/>
-                <br/><a href="index.html">Forgot Password?</a><br/>
-        </form>
-    </div>
-</body>
+        </div>
+
+        <!-- Login and Register Panel -->
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-md-offset-3">
+                    <div class="form-body">
+                        <ul class="nav nav-tabs">
+                            <li class="active"><a data-toggle="tab" href="#Signin">Sign In</a></li>
+                            <li><a data-toggle="tab" href="#Register">Register</a></li>
+                        </ul>
+                        <div class="tab-content">
+                            <div id="Signin" class="tab-pane fade in active">
+                                <div class="panel-main text-center">
+                                    <form class="form" method="post" action="http://localhost/cgi-bin/login.php" enctype="application/x-www-form-urlencoded">
+                                        <input type="text" name="username" placeholder="Username">
+                                        <input type="password" name="password" placeholder="Password">
+                                        <button type="submit" class="btn">Sign In</button>
+                                        <br>
+                                        <a href="#"><p>Forgot Password?</p></a>
+                                    </form>
+                                </div>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div id="Register" class="tab-pane fade">
+                                <div class="panel-main text-center">
+                                    <form class="form" method="post" action="http://localhost/cgi-bin/register.php"  enctype="application/x-www-form-urlencoded">
+                                        <input type="text" name="first_name" placeholder="First Name">
+                                        <input type="text" name="last_name" placeholder="Last Name">
+                                        <input type="text" name="username" placeholder="Username">
+                                        <input type="password" name="password" placeholder="Password">
+                                        <button type="submit" class="btn">Register now</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+        <script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+    </body>
 </html>
