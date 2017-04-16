@@ -1,4 +1,5 @@
 <?php
+
 //variables
 $fileName = basename($_FILES['filename']['name']);
 
@@ -20,7 +21,12 @@ if($alreadyExist == 0) {
     }
     if($result) {
         echo "Upload successful!!";
-        //RUN FFMPEG ON THE FILE
+        //Get metadata of file
+        $metadata = getMetadata($finalDest);
+        //Store metadata and vidname into db
+        storeToDB($fileName, $metadata);
+        //extract the frames to a folder
+        extractFrames($finalDest);
     } else {
         echo "Upload failed!!";
     }
@@ -29,6 +35,40 @@ if($alreadyExist == 0) {
 }
 
 //------------------------ FUNCTIONS BELOW ------------------------
+
+function extractFrames($path) {
+    $folder = $_SERVER['DOCUMENT_ROOT'] . "/images/" . pathinfo($path, PATHINFO_FILENAME);
+//    echo "folder: ".$folder."<br>";
+    shell_exec("mkdir -p '$folder'");
+    shell_exec("ffmpeg -v quiet -i '$path' '$folder'/%d.png -hide_banner");
+    shell_exec("chmod 444 '$folder'/"); //not really working...
+    return 0;
+}
+
+function storeToDB($fileName, $metadata) {
+    $db = connectToDB();
+    //frames, width, height, fps, name
+    $query = "INSERT INTO video VALUES($metadata[2], $metadata[1], $metadata[0], 30, '$fileName')";
+    $result = pg_query($db, $query);
+    pg_close($db);
+    return 0;
+}
+
+
+function getMetadata($path) {
+    $string = shell_exec("ffprobe -print_format json -show_streams '$path'");
+    //var_dump(json_decode($string));
+    $jason = json_decode($string);
+    $height = $jason->streams[0]->height;
+    $width = $jason->streams[0]->width;
+    $totalFrames = intval($jason->streams[0]->nb_frames);
+    $duration = floatval($jason->streams[1]->duration);
+    //$avgFPS = $jason->streams[0]->r_frame_rate;
+    $avgFPS = floatval(number_format($totalFrames / $duration, 4));
+    $result = array($height, $width, $totalFrames, $duration, $avgFPS);
+    return $result;
+}
+
 function checkMimeType($mimetype) {
     $allowedTypes = array("mp4", "avi");
     //split string into 2 parts: file/mime type and extension
