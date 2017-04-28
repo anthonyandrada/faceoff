@@ -94,25 +94,25 @@ video {
 }
 
 input::-webkit-input-placeholder {
-    color: gainsboro !important;
+    color: #6e6e6e !important;
     font-weight: bold;
     font-size: 120%; 
     }
 
     input:-moz-placeholder { /* Firefox 18- */
-    color: gainsboro !important;
+    color: #6e6e6e !important;
     font-weight: bold;
     font-size: 120%; 
 }
 
     input::-moz-placeholder {  /* Firefox 19+ */
-    color: gainsboro !important;
+    color: #6e6e6e !important;
     font-weight: bold;
     font-size: 120%; 
 }
 
     input:-ms-input-placeholder {  
-    color: gainsboro !important;
+    color: #6e6e6e !important;
     font-weight: bold;
     font-size: 120%; 
 }
