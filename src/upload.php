@@ -23,19 +23,23 @@
                 $alreadyExist = checkAlreadyExist($fileName);
                 //continue is filename is not in database
                 if($alreadyExist == 0) {
-                    $dir = $_SERVER['DOCUMENT_ROOT'] . "/video/";
-                    $finalDest = $dir . basename($_FILES['filename']['name']);
+                    define ('SITE_ROOT', realpath(dirname(__FILE__)));
+                    echo "siteRoot: " . SITE_ROOT . "<P>";
+                    $finalDest = SITE_ROOT . "/video/" . basename($_FILES['filename']['name']);
                     $tempName = $_FILES['filename']['tmp_name'];
+                    echo "tempName: " . $tempName ."<p>";
                     //actually check if the file is a video
                     $mimetype = mime_content_type($tempName);
                     $correctMimeType = checkMimeType($mimetype);
                     //Save file to server if correct mime type
                     if($correctMimeType == 1) {
+                        echo "finalDest: " . $finalDest . "<p>";
                         $result = move_uploaded_file($tempName, $finalDest);
                     }
                     if($result) {
                         $message = "Upload successful!!";
                         //Get metadata of file
+                        echo "metadata param: " . $finalDest . "<P>"; //chek
                         $metadata = getMetadata($finalDest);
                         //Store metadata and vidname into db
                         storeToDB($fileName, $metadata);
@@ -53,8 +57,9 @@
         //------------------------ FUNCTIONS BELOW ------------------------
 
         function extractFrames($path) {
-            $folder = $_SERVER['DOCUMENT_ROOT'] . "/images/" . pathinfo($path, PATHINFO_FILENAME);
-            //    echo "folder: ".$folder."<br>";
+            echo "=================<p>";
+            $folder = SITE_ROOT . "/extractedFrames/" . pathinfo($path, PATHINFO_FILENAME);
+            echo "folder: ".$folder."<br>";
             shell_exec("mkdir -p '$folder'");
             shell_exec("ffmpeg -v quiet -i '$path' '$folder'/%d.png -hide_banner");
             shell_exec("chmod 444 '$folder'/"); //not really working...
@@ -80,7 +85,6 @@
             $duration = floatval($jason->streams[1]->duration);
             $avgFPS = $jason->streams[0]->r_frame_rate;
             //$message = "<br>$totalFrames<br>$avgFPS<br>$duration<br>";
-
             //$avgFPS = floatval(number_format($totalFrames / $duration, 4));
             $result = array($height, $width, $totalFrames, $avgFPS, $duration);
             return $result;
@@ -134,7 +138,6 @@
             $result = pg_query($db, $query);
             while($row = pg_fetch_row($result)) {
                 if(strcmp($row[0], $fileName) !== 0) {
-                    //echo "$row[0]" . "$fileName <br/>";
                     return 1;
                 }
             }
@@ -150,7 +153,7 @@
             <div class="container">
                 <!-- Brand and toggle get grouped for better mobile display -->
                 <div class="navbar-header">
-                    <a class="navbar-brand" href="#"><img src="images/logo.png"></a>
+                    <a class="navbar-brand" href="index.html"><img src="images/logo.png"></a>
                 </div>
 
                 <!-- Collect the nav links, forms, and other content for toggling -->

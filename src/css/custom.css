@@ -4,38 +4,40 @@
     border-radius: 0;
 }
 body{
-    background:#ffffff;
+    background-color: white;
+}
+
+#index-body {
+    overflow: hidden
 }
 
 .background-container {
-    width: 100%;
-    height: 100%;
-    border-left: none;
-    border-right: none;
-    position: relative;
-}
-
-.video-container {
     position: fixed;
-    top: 0%;
-    left: 0%;
-    height: 100%;
-    width: 100%;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
     overflow: hidden;
+    z-index: -1;
 }
 
-video {
+.background-video {
     position: absolute;
-    z-index: -1;
-    opacity: 1;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
 }
 
 .form-body{
+    position: relative;
     opacity: .85;
     margin-top: 50%;
+    top: -150px;
     background:#dfdfdf;
     padding:20px;
     color: cornflowerblue;
+    z-index: 0;
 }
 
 .panel-main{
@@ -122,23 +124,26 @@ input::-webkit-input-placeholder {
     font-size: 120%; 
 }
 
-/* layout.css Style */
-.upload-drop-zone {
-  height: 150px;
-  border-width: 2px;
-  margin-bottom: 20px;
+@media (min-aspect-ratio: 16/9) {
+    .background-video {
+        height: 300%;
+        top: -100%;
+    }
 }
 
-/* skin.css Style*/
-.upload-drop-zone {
-  color: #ccc;
-  border-style: dashed;
-  border-color: #ccc;
-  line-height: 150px;
-  font-size: 200%;
-  text-align: center
+@media (max-aspect-ratio: 16/9) {
+    .background-video {
+        width: 300%;
+        left: -100%;
+    }
 }
-.upload-drop-zone.drop {
-  color: #222;
-  border-color: #222;
+
+@media (max-width: 767px) {
+    .background-container {
+        background: url('../images/bg.jpg') center center / cover no-repeat;
+    }
+
+    .background-video {
+        display: none;
+    }
 }

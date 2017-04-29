@@ -9,4 +9,12 @@ height INT,
 fps REAL,
 username char(24));
 
+Need to create folders in src folder:
+video
+extractedFrames
 
+Need to install php-pgsql to connect to db
+sudo apt-get install php-pgsql
+
+Need FFMPEG installed:
+sudo apt-get install ffmpeg
