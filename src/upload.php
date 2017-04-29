@@ -24,22 +24,18 @@
                 //continue is filename is not in database
                 if($alreadyExist == 0) {
                     define ('SITE_ROOT', realpath(dirname(__FILE__)));
-                    echo "siteRoot: " . SITE_ROOT . "<P>";
                     $finalDest = SITE_ROOT . "/video/" . basename($_FILES['filename']['name']);
                     $tempName = $_FILES['filename']['tmp_name'];
-                    echo "tempName: " . $tempName ."<p>";
                     //actually check if the file is a video
                     $mimetype = mime_content_type($tempName);
                     $correctMimeType = checkMimeType($mimetype);
                     //Save file to server if correct mime type
                     if($correctMimeType == 1) {
-                        echo "finalDest: " . $finalDest . "<p>";
                         $result = move_uploaded_file($tempName, $finalDest);
                     }
                     if($result) {
                         $message = "Upload successful!!";
                         //Get metadata of file
-                        echo "metadata param: " . $finalDest . "<P>"; //chek
                         $metadata = getMetadata($finalDest);
                         //Store metadata and vidname into db
                         storeToDB($fileName, $metadata);
@@ -57,9 +53,7 @@
         //------------------------ FUNCTIONS BELOW ------------------------
 
         function extractFrames($path) {
-            echo "=================<p>";
             $folder = SITE_ROOT . "/extractedFrames/" . pathinfo($path, PATHINFO_FILENAME);
-            echo "folder: ".$folder."<br>";
             shell_exec("mkdir -p '$folder'");
             shell_exec("ffmpeg -v quiet -i '$path' '$folder'/%d.png -hide_banner");
             shell_exec("chmod 444 '$folder'/"); //not really working...
@@ -124,7 +118,6 @@
             $extension = pathinfo($fileName, PATHINFO_EXTENSION);
             for($x = 0; $x < count($allowedTypes); $x++) {
                 if(strcmp($allowedTypes[$x], $extension) == 0) {
-                    //echo "correct type<br/>";
                     return 1;
                 }
             }
