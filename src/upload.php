@@ -12,39 +12,42 @@
     </head>
 
     <body>
-
         <?php
-        //variables
-        $fileName = basename($_FILES['filename']['name']);
-        //check extension that was provided before actually uploading the file
-        $correctExtension = checkExtension($fileName);
-        //check to see if filename already exists in the database
-        $alreadyExist = checkAlreadyExist($fileName);
-        //continue is filename is not in database
-        if($alreadyExist == 0) {
-            $dir = $_SERVER['DOCUMENT_ROOT'] . "/video/";
-            $finalDest = $dir . basename($_FILES['filename']['name']);
-            $tempName = $_FILES['filename']['tmp_name'];
-            //actually check if the file is a video
-            $mimetype = mime_content_type($tempName);
-            $correctMimeType = checkMimeType($mimetype);
-            //Save file to server if correct mime type
-            if($correctMimeType == 1) {
-                $result = move_uploaded_file($tempName, $finalDest);
+        $message = "";
+        if(isset($_POST['submit'])) {
+            $fileName = basename($_FILES['filename']['name']);
+            //check extension that was provided before actually uploading the file
+            $correctExtension = checkExtension($fileName);
+            if($correctExtension) {
+                //check to see if filename already exists in the database
+                $alreadyExist = checkAlreadyExist($fileName);
+                //continue is filename is not in database
+                if($alreadyExist == 0) {
+                    $dir = $_SERVER['DOCUMENT_ROOT'] . "/video/";
+                    $finalDest = $dir . basename($_FILES['filename']['name']);
+                    $tempName = $_FILES['filename']['tmp_name'];
+                    //actually check if the file is a video
+                    $mimetype = mime_content_type($tempName);
+                    $correctMimeType = checkMimeType($mimetype);
+                    //Save file to server if correct mime type
+                    if($correctMimeType == 1) {
+                        $result = move_uploaded_file($tempName, $finalDest);
+                    }
+                    if($result) {
+                        $message = "Upload successful!!";
+                        //Get metadata of file
+                        $metadata = getMetadata($finalDest);
+                        //Store metadata and vidname into db
+                        storeToDB($fileName, $metadata);
+                        //extract the frames to a folder
+                        extractFrames($finalDest);
+                    } else {
+                        $message = "Upload failed!!";
+                    }
+                } else {
+                    $message = "File name already used in DB for this user.";
+                }
             }
-            if($result) {
-                echo "Upload successful!!";
-                //Get metadata of file
-                $metadata = getMetadata($finalDest);
-                //Store metadata and vidname into db
-                storeToDB($fileName, $metadata);
-                //extract the frames to a folder
-                extractFrames($finalDest);
-            } else {
-                echo "Upload failed!!";
-            }
-        } else {
-            echo "File name already exists in DB.";
         }
 
         //------------------------ FUNCTIONS BELOW ------------------------
@@ -67,7 +70,6 @@
             return 0;
         }
 
-
         function getMetadata($path) {
             $string = shell_exec("ffprobe -print_format json -show_streams '$path'");
             //var_dump(json_decode($string));
@@ -77,7 +79,7 @@
             $totalFrames = intval($jason->streams[0]->nb_frames);
             $duration = floatval($jason->streams[1]->duration);
             $avgFPS = $jason->streams[0]->r_frame_rate;
-            echo "<br>$totalFrames<br>$avgFPS<br>$duration<br>";
+            //$message = "<br>$totalFrames<br>$avgFPS<br>$duration<br>";
 
             //$avgFPS = floatval(number_format($totalFrames / $duration, 4));
             $result = array($height, $width, $totalFrames, $avgFPS, $duration);
@@ -109,7 +111,7 @@
             if($db){
                 return $db;
             } else {
-                echo "Connection to db failed!<br/>";
+                $message = "Connection to database failed!<br/>";
             }
         }
 
@@ -122,11 +124,10 @@
                     return 1;
                 }
             }
-            echo "not correct type 0<br/>";
+            $message = "File type not accepted.";
             return 0;
         }
 
-        //THE QUERY IS NOT RIGHT! JUST A PLACEHOLDER!!!
         function checkAlreadyExist($fileName) {
             $db = connectToDB();
             $query = "SELECT filename FROM video WHERE filename='$fileName'";
@@ -140,8 +141,7 @@
             pg_close($db);
             return 0;
         }
-        //return to upload.html page - don't need anymore...
-        //header("location: http://localhost/upload.html");
+
         ?>
 
 
@@ -150,7 +150,7 @@
             <div class="container">
                 <!-- Brand and toggle get grouped for better mobile display -->
                 <div class="navbar-header">
-                    <a class="navbar-brand" href="#">FACE OFF</a>
+                    <a class="navbar-brand" href="#"><img src="images/logo.png"></a>
                 </div>
 
                 <!-- Collect the nav links, forms, and other content for toggling -->
@@ -173,8 +173,10 @@
         <!-- jumbotron -->
         <div class="jumbotron text-center">
             <div class="container">
-                <h1>Logged In Upload Page</h1>
-                <p>Welcome to Face Off, our CS160 group project website. Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah </p>
+                <br>
+                <h1>FACE OFF - Members Area :)</h1>
+                <p>Upload videos here!</p>
+                <br>
             </div>
         </div>
 
@@ -186,10 +188,14 @@
                         <label for="fileToUpload">Select a File to Upload</label><br />
                         <input type="file" name="filename"/>
                     </div>
-                    <div id="fileName"></div>
-                    <div id="fileSize"></div>
-                    <div id="fileType"></div>
-                    <input type="submit" value="Submit"/>
+                    <div id="message">
+
+                        <?php
+                        echo $message;
+                        ?>
+
+                    </div>
+                    <input type="submit" onclick="uploadFile()" name="submit" value="submit"/>
                     <div id="progressNumber"></div>
                 </div>
             </div>

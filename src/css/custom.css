@@ -1,5 +1,5 @@
 .navbar {
-    background: none;
+    background: black;
     margin-bottom: 0;
     border-radius: 0;
 }
@@ -44,6 +44,11 @@ video {
 
 .nav-tabs {
     border-bottom: none !important;
+}
+
+.navbar-header>a>img {
+    height: 25px;
+    width: 100px;
 }
 
 .nav-tabs>li{
