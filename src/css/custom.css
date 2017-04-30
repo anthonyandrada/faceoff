@@ -1,12 +1,27 @@
 .navbar {
+    height: 50px;
     background: black;
     margin-bottom: 0;
     border-radius: 0;
 }
+
 body{
     background-color: white;
 }
 
+img {
+    height: 180px;
+    width: 320px;
+}
+
+.content {
+    position:absolute;
+    top: 50px;
+    left:0px;
+    right:0px;
+    bottom:0px;
+    overflow-y:scroll;
+}
 #index-body {
     overflow: hidden
 }
@@ -41,7 +56,7 @@ body{
 }
 
 .panel-main{
-	padding-top:20px;
+    padding-top:20px;
 }
 
 .nav-tabs {
@@ -55,14 +70,14 @@ body{
 
 .nav-tabs>li{
     width:50%;
-	color:#222222 !important;
+    color:#222222 !important;
 }
 
 .nav-tabs>li.active>a, .nav-tabs>li.active>a:hover, .nav-tabs>li.active>a:focus {
     color: #fff;
     border: none !important;
     border-bottom-color: transparent;
-	border-radius:none !important;
+    border-radius:none !important;
 }
 .nav-tabs>li>a {
     color: cornflowerblue;
@@ -70,29 +85,29 @@ body{
     line-height: 1.5;
     border: none !important;
     border-radius:none !important;
-	text-transform:uppercase;
-	font-size:16px;
+    text-transform:uppercase;
+    font-size:16px;
 }
 
 .form input[type=text], input[type=password], input[type=file]{
     font-size:13px;
-	padding:10px;
-	border:1px solid#ccc;
-	outline:none;
-	width:100%;
-	margin:8px 0;
-	
+    padding:10px;
+    border:1px solid#ccc;
+    outline:none;
+    width:100%;
+    margin:8px 0;
+
 }
 .form button{
-	background:#49afe4;
-	color:#fff;
-	padding:10px 25px;
-	font-size:14px;
-	margin-top:5px;	
+    background:#49afe4;
+    color:#fff;
+    padding:10px 25px;
+    font-size:14px;
+    margin-top:5px;
 }
 .form button:hover{
-	background:#22a0e2;
-	color:#fff;	
+    background:#22a0e2;
+    color:#fff;
 }
 .form p{
     color: black;
@@ -104,21 +119,21 @@ input::-webkit-input-placeholder {
     color: #6e6e6e !important;
     font-weight: bold;
     font-size: 120%; 
-    }
+}
 
-    input:-moz-placeholder { /* Firefox 18- */
+input:-moz-placeholder { /* Firefox 18- */
     color: #6e6e6e !important;
     font-weight: bold;
     font-size: 120%; 
 }
 
-    input::-moz-placeholder {  /* Firefox 19+ */
+input::-moz-placeholder {  /* Firefox 19+ */
     color: #6e6e6e !important;
     font-weight: bold;
     font-size: 120%; 
 }
 
-    input:-ms-input-placeholder {  
+input:-ms-input-placeholder {
     color: #6e6e6e !important;
     font-weight: bold;
     font-size: 120%; 

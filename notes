@@ -7,7 +7,8 @@ frames INT,
 width INT,
 height INT,
 fps REAL,
-username char(24));
+username char(24))
+processed BOOLEAN;
 
 Need to create folders in src folder:
 video

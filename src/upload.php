@@ -14,6 +14,7 @@
     <body>
         <?php
         $message = "";
+        define ('SITE_ROOT', realpath(dirname(__FILE__)));
         if(isset($_POST['submit'])) {
             $fileName = basename($_FILES['filename']['name']);
             //check extension that was provided before actually uploading the file
@@ -23,7 +24,6 @@
                 $alreadyExist = checkAlreadyExist($fileName);
                 //continue is filename is not in database
                 if($alreadyExist == 0) {
-                    define ('SITE_ROOT', realpath(dirname(__FILE__)));
                     $finalDest = SITE_ROOT . "/video/" . basename($_FILES['filename']['name']);
                     $tempName = $_FILES['filename']['tmp_name'];
                     //actually check if the file is a video
@@ -55,8 +55,9 @@
         function extractFrames($path) {
             $folder = SITE_ROOT . "/extractedFrames/" . pathinfo($path, PATHINFO_FILENAME);
             shell_exec("mkdir -p '$folder'");
-            shell_exec("ffmpeg -v quiet -i '$path' '$folder'/%d.png -hide_banner");
-            shell_exec("chmod 444 '$folder'/"); //not really working...
+            shell_exec("ffmpeg -v quiet -i '$path' '$folder'/%04d.png -hide_banner");
+            shell_exec("chmod 755 '$folder'/");
+            //good to have 644 permission for files, sensitive files = 700 permission
             return 0;
         }
 
@@ -140,7 +141,6 @@
 
         ?>
 
-
         <!-- Nav bar -->
         <nav class="navbar navbar-inverse">
             <div class="container">
@@ -167,53 +167,86 @@
         </nav>
 
         <!-- jumbotron -->
-        <div class="jumbotron text-center">
-            <div class="container">
-                <br>
-                <h1>FACE OFF - Members Area :)</h1>
-                <p>Upload videos here!</p>
-                <br>
-            </div>
-        </div>
-
-        <!-- Upload Panel -->
-        <form class="container" id="form" method="post" action="#" enctype="multipart/form-data">
-            <div class="row setup-content" id="step-1">
-                <div class="col-xs-12">
-                    <div class="col-md-12 text-center">
-                        <label for="fileToUpload">Select a File to Upload</label><br />
-                        <input type="file" name="filename"/>
-                    </div>
-                    <div id="message">
-
-                        <?php
-                        echo $message;
-                        ?>
-
-                    </div>
-                    <input type="submit" onclick="uploadFile()" name="submit" value="submit"/>
-                    <div id="progressNumber"></div>
+        <div class="content">
+            <div class="jumbotron text-center">
+                <div class="container">
+                    <br>
+                    <h1>FACE OFF - Members Area :)</h1>
+                    <p>Upload videos here!</p>
+                    <br>
                 </div>
             </div>
-        </form>
 
-        <!-- Table -->
-        <div class="container">
-            <hr>
-            <table class="table table-striped">
-                <tr class="warning">
-                    <th>Thumbnail</th>
-                    <th>File Name</th>
-                    <th>Processed</th>
-                </tr>
-                <tr>
-                    <td>Jill</td>
-                    <td>Smith</td>
-                    <td>50</td>
-                </tr>
-            </table>
+            <!-- Upload Panel -->
+            <form class="container" id="form" method="post" action="#" enctype="multipart/form-data">
+                <div class="row setup-content" id="step-1">
+                    <div class="col-xs-12">
+                        <div class="col-md-12 text-center">
+                            <label for="fileToUpload">Select a File to Upload</label><br />
+                            <input type="file" name="filename"/>
+                        </div>
+                        <div id="message">
+
+                            <?php
+                            echo $message;
+                            ?>
+
+                        </div>
+                        <input type="submit" onclick="uploadFile()" name="submit" value="submit"/>
+                        <div id="progressNumber"></div>
+                    </div>
+                </div>
+            </form>
+
+            <!-- Table -->
+            <div class="container">
+                <hr>
+                <table class="table table-striped">
+                    <tr class="warning">
+                        <th>Thumbnail</th>
+                        <th>File Name</th>
+                        <th>Processed</th>
+                    </tr>
+
+                    <!--                    <img src="extractedFrames/short/0001.png">-->
+
+                    <?php
+
+                    $db = connectToDB();
+                    $query = "SELECT * FROM video WHERE username='fakeusername'";
+                    $result = pg_query($db, $query);
+                    //uuid | filename | frames | width | height | fps | username | processed
+                    while($row = pg_fetch_row($result)) {
+                        $filename = explode(".", $row[1]);
+                        $directory = "extractedFrames/" . $filename[0];
+                        $thumbnail = $directory . "/0001.png";
+                        $numFiles = shell_exec("ls $directory | wc -l");
+
+                        //WRITE HTML
+                        echo "<tr>";
+                        echo "<td><a href='#'><img src='$thumbnail' alt='Thumbnail...'/></td></a>";
+                        echo "<td>" . $row[1] . "</td>"; //filename
+                        if($row[7] == 'f') {
+                            if(strcmp(trim($numFiles), $row[2]) == 0) {
+                                $query = "update video set processed = true where filename = '$row[1]'";
+                                pg_query($db, $query);
+                                echo "<td>Yes</td>";
+                            } else {
+                                echo "<td>" . number_format(($numFiles / (float)($row[2])) * 100, 2) . "% Processed</td>";
+                            }
+                        } else {
+                            echo "<td>Yes</td>";
+                        }
+                        echo "</tr>";
+                    }
+                    pg_close($db);
+
+                    //update video set processed = true where filename = 'short.mp4';
+                    ?>
+                </table>
+            </div>
+            <div style="margin-top: 100px;"></div>
         </div>
-
         <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
         <script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
         <script src="js/bootstrap.min.js"></script>
