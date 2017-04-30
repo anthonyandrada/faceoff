@@ -8,7 +8,6 @@
         <title>Face Off - CS160 Project Website</title>
         <!-- Bootstrap -->
         <link href="css/bootstrap.min.css" rel="stylesheet">
-        <link href="css/custom.css" rel="stylesheet">
     </head>
 
     <body>
@@ -203,15 +202,11 @@
                 <hr>
                 <table class="table table-striped">
                     <tr class="warning">
-                        <th>Thumbnail</th>
+                        <th class='td-thumb'>Thumbnail</th>
                         <th>File Name</th>
                         <th>Processed</th>
                     </tr>
-
-                    <!--                    <img src="extractedFrames/short/0001.png">-->
-
                     <?php
-
                     $db = connectToDB();
                     $query = "SELECT * FROM video WHERE username='fakeusername'";
                     $result = pg_query($db, $query);
@@ -220,11 +215,14 @@
                         $filename = explode(".", $row[1]);
                         $directory = "extractedFrames/" . $filename[0];
                         $thumbnail = $directory . "/0001.png";
+                        $vidFile = "video/" . $row[1];
                         $numFiles = shell_exec("ls $directory | wc -l");
 
                         //WRITE HTML
                         echo "<tr>";
-                        echo "<td><a href='#'><img src='$thumbnail' alt='Thumbnail...'/></td></a>";
+                        echo "<td>
+                        <a data-fancybox class='thumbnail'rel='lightbox' title='$row[1]' data-poster='$thumbnail' href='$vidFile'><img class='img-responsive' alt='Image...' src='$thumbnail' /></a>
+                        </td>";
                         echo "<td>" . $row[1] . "</td>"; //filename
                         if($row[7] == 'f') {
                             if(strcmp(trim($numFiles), $row[2]) == 0) {
@@ -240,16 +238,16 @@
                         echo "</tr>";
                     }
                     pg_close($db);
-
-                    //update video set processed = true where filename = 'short.mp4';
                     ?>
                 </table>
             </div>
             <div style="margin-top: 100px;"></div>
         </div>
-        <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
-        <script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+        <script src="js/jquery-3.2.1.min.js"></script>
+        <script src="js/jquery.fancybox.min.js"></script>
+        <link rel="stylesheet" href="css/jquery.fancybox.min.css" />
         <script src="js/bootstrap.min.js"></script>
+        <link href="css/custom.css" rel="stylesheet">
         <script src="js/custom.js"></script>
     </body>
 </html>
