@@ -1,4 +1,4 @@
-#faceoff URL: faceoff.ddns.net
+# faceoff URL: faceoff.ddns.net
 
 Schema used from upload.php:
 
