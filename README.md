@@ -3,7 +3,7 @@
 Schema used from upload.php:
 
 CREATE TABLE VIDEO (
-  uuid uuid primary key,
+/t uuid uuid primary key,
   fileName char(24),
   frames INT,
   width INT,
