@@ -85,7 +85,7 @@ function checkMimeType($mimetype) {
 
 //connect to DB
 function connectToDB() {
-    $host        = "host=127.0.0.1";
+    $host        = "host=localhost";
     $port        = "port=5432";
     $dbname      = "dbname=cs160";
     $credentials = "user=postgres password=student";

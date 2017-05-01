@@ -60,10 +60,10 @@
                         <div class="tab-content">
                             <div id="Signin" class="tab-pane fade in active">
                                 <div class="panel-main text-center">
-                                    <form class="form" method="post" action="http://localhost/cgi-bin/login.php" enctype="application/x-www-form-urlencoded">
-                                        <input type="text" name="username" placeholder="Username">
-                                        <input type="password" name="password" placeholder="Password">
-                                        <button type="submit" class="btn">Sign In</button>
+                                    <form class="form" method="post" action="http://faceoff.ddns.net/cgi-bin/login.cgi" enctype="application/x-www-form-urlencoded">
+                                        <input type="text" id="username" name="username" placeholder="Username">
+                                        <input type="password" id="password" name="password" placeholder="Password">
+                                        <button type="submit" class="submitbtn">Sign In</button>
                                         <br>
                                         <a href="#"><p>Forgot Password?</p></a>
                                     </form>
@@ -72,12 +72,12 @@
                             </div>
                             <div id="Register" class="tab-pane fade">
                                 <div class="panel-main text-center">
-                                    <form class="form" method="post" action="http://localhost/cgi-bin/register.php"  enctype="application/x-www-form-urlencoded">
-                                        <input type="text" name="first_name" placeholder="First Name">
-                                        <input type="text" name="last_name" placeholder="Last Name">
-                                        <input type="text" name="username" placeholder="Username">
-                                        <input type="password" name="password" placeholder="Password">
-                                        <button type="submit" class="btn">Register now</button>
+                                    <form class="form" method="post" action="http://faceoff.ddns.net/cgi-bin/register.cgi"  enctype="application/x-www-form-urlencoded">
+                                        <input type="text" id="first_name" name="first_name" placeholder="First Name">
+                                        <input type="text" id="last_name" name="last_name" placeholder="Last Name">
+                                        <input type="text" id="username" name="username" placeholder="Username">
+                                        <input type="password" id="password" name="password" placeholder="Password">
+                                        <button type="submit" class="submitbtn">Register now</button>
                                     </form>
                                 </div>
                             </div>
