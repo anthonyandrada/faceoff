@@ -1,3 +1,5 @@
+#faceoff URL: faceoff.ddns.net
+
 Schema used from upload.php:
 
 CREATE TABLE VIDEO (
