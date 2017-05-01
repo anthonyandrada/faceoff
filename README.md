@@ -3,14 +3,14 @@
 Schema used from upload.php:
 
 CREATE TABLE VIDEO (
-## uuid uuid primary key,
-##  fileName char(24),
-##  frames INT,
-##  width INT,
-##  height INT,
-##  fps REAL,
-##  username char(24))
-##  processed BOOLEAN;
+/n uuid uuid primary key,
+/n  fileName char(24),
+/n  frames INT,
+/n  width INT,
+/n  height INT,
+/n  fps REAL,
+/n  username char(24))
+/n  processed BOOLEAN;
 
 ### To Do
 - [x] Need to add processed column to DB
