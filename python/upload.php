@@ -88,7 +88,7 @@ function connectToDB() {
     $host        = "host=127.0.0.1";
     $port        = "port=5432";
     $dbname      = "dbname=cs160";
-    $credentials = "user=postgres password=asdf";
+    $credentials = "user=postgres password=student";
     $db = pg_connect("$host $port $dbname $credentials");
     //delete if statement after testing
     if(!$db){

@@ -10,12 +10,15 @@ fps REAL,
 username char(24))
 processed BOOLEAN;
 
+Need to add processed column to DB:
+[x]
+
 Need to create folders in src folder:
-video
-extractedFrames
+[] video
+[] extractedFrames
 
 Need to install php-pgsql to connect to db
-sudo apt-get install php-pgsql
+[x] sudo apt-get install php-pgsql
 
 Need FFMPEG installed:
-sudo apt-get install ffmpeg
+[x] sudo apt-get install ffmpeg
