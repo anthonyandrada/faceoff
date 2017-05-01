@@ -16,8 +16,8 @@ processed BOOLEAN;
 - [x] Need to add processed column to DB
 
 Need to create folders in src folder:
-- [] video
-- [] extractedFrames
+- [ ] video
+- [ ] extractedFrames
 
 Need to install php-pgsql to connect to db
 - [x] sudo apt-get install php-pgsql
