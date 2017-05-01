@@ -1,7 +1,7 @@
 # faceoff URL: faceoff.ddns.net
 
 Schema used from upload.php:
-'''
+```
 CREATE TABLE VIDEO (
   uuid uuid primary key,
   fileName char(24),
@@ -11,7 +11,8 @@ CREATE TABLE VIDEO (
   fps REAL,
   username char(24))
   processed BOOLEAN;
-'''
+```
+
 
 ### To Do
 - [x] Need to add processed column to DB
