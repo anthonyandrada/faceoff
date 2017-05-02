@@ -36,3 +36,5 @@
 | timm_left  | point not null              |
 | timm_right | point not null              |
 | data_1     | point not null              |
+| ...        | ...                         |
+| data_68    | point not null              |
