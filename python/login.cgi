@@ -37,7 +37,9 @@ else:
                 curs.execute("UPDATE profile SET last_login = %s, ip = %s WHERE username = %s", (last_login, ip, username))
     else:
         message = '<h1>Error: Incorrect password.</h1>'
-
+        
+print("Location:http://faceoff.ddns.net/upload.php") #placeholder, will update once sessions are implemented
+print # to end the CGI response headers.
 # HTML code
 print "Content-type:text/html\r\n\r\n"
 print '<html>'
