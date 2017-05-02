@@ -28,6 +28,9 @@ except:
 else:
     if form.getvalue('password') == e.decrypt(result[0]):
         message = '<h1>User %s logged in.</h1>' % (username)
+        redirect = "Location:http://faceoff.ddns.net/upload.php"
+        token = "?username="
+        redirect = redirect + token + username
         # fetch client IP address
         ip = os.environ["REMOTE_ADDR"]
         # read current datetime stamp, strip milliseconds
@@ -38,7 +41,7 @@ else:
     else:
         message = '<h1>Error: Incorrect password.</h1>'
         
-print("Location:http://faceoff.ddns.net/upload.php") #placeholder, will update once sessions are implemented
+print redirect #placeholder, will update once sessions are implemented
 print # to end the CGI response headers.
 # HTML code
 print "Content-type:text/html\r\n\r\n"
