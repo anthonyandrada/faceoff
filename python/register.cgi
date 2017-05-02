@@ -39,6 +39,8 @@ if p.check_username():
 else:
     message = '<h1>Error: Username in use.</h1>'
 
+print("Location:http://faceoff.ddns.net/")
+print # to end the CGI response headers.
 # HTML code
 print "Content-type:text/html\r\n\r\n"
 print '<html>'
