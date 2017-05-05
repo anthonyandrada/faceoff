@@ -43,10 +43,10 @@ int main(int argc, char** argv) {
 	/* Local Variables */
 	vector<Point2f> facial;
 	vector<Point2f> pupils;
-	int numOfFrames = 2; //Default
+	int numOfFrames = 0;
 	int countFrames = 0;
 	string filepath =
-			"/home/syadmin/Downloads/DelaunayTriangleTest/Untitled Folder/";
+			"/home/syadmin/Downloads/DelaunayTriangleTest/Untitled_Folder/";
 	string filename = "0000";
 	Scalar delaunay_color(255, 255, 255), points_color(0, 0, 255);
 	/*
@@ -62,20 +62,24 @@ int main(int argc, char** argv) {
 	 * Name of images - filename
 	 * Pupil data points - pupils
 	 */
-	while (countFrames < numOfFrames) {
-		//fix filename to fit 4 digit format
-		filename = countFrames;
+	if(argc != 0) filepath = argv[0];
+	while (countFrames <= numOfFrames) {
+		//extension type
+		ostringstream convert;
+		convert << countFrames;
+		filename = convert.str() + ".bmp";
 		if (countFrames < 1000) {
-			while (filename.size() <= 4) {
+			//caps at 4 digits
+			while (filename.size() <= 7) {
 				filename = "0" + filename;
 			}
 		}
+		cout << filename << endl;
 		//iterates till there are no more frames
 		//name + frameID.png file
 		//Mat img = imread(argv[0] + countFrames + ".png");
-		Mat img = imread(filepath + filename + ".bmp");
+		Mat img = imread(filepath + filename);
 		Mat img_clone = img.clone();
-
 		// Rectangle to be used with Subdiv2D
 		Size size = img.size();
 		Rect rect(0, 0, size.width, size.height);
@@ -85,9 +89,18 @@ int main(int argc, char** argv) {
 
 		//Extract pts from text file - comment out when database works.
 		//read in format: x y
-		string pathname = filepath + filename + ".txt";
-		cout << pathname << endl;
-		ifstream ifs(pathname.c_str());
+
+		//extension type
+		filename = convert.str() + ".txt";
+		if (countFrames < 1000) {
+			//caps at 4 digits
+			while (filename.size() <= 7) {
+				filename = "0" + filename;
+			}
+		}
+		filename = filepath + filename;
+		cout << filename << endl;
+		ifstream ifs(filename.c_str());
 		int x, y;
 		while (ifs >> x >> y) {
 			facial.push_back(Point2f(x, y));
@@ -107,13 +120,21 @@ int main(int argc, char** argv) {
 				it++) {
 			draw_point(img_clone, *it, points_color);
 		}
-		pathname = filepath + filename;
-
-		imwrite(pathname, img_clone);
+		//extension type
+		filename = convert.str() + ".bmp";
+		if (countFrames < 1000) {
+			//caps at 4 digits
+			while (filename.size() <= 7) {
+				filename = "0" + filename;
+			}
+		}
+		cout << filename << endl;
+		imwrite(filepath + "temp" + filename, img_clone);
 		//Saves in directory
 		//name = "/../tempImage/image" + countFrames + ".png";
 
 		//iterate up
+		convert.flush();
 		countFrames++;
 	}
 	//End
