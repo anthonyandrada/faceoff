@@ -43,8 +43,8 @@ int main(int argc, char** argv) {
 	/* Local Variables */
 	vector<Point2f> facial;
 	vector<Point2f> pupils;
-	int numOfFrames = 0;
-	int countFrames = 0;
+	int numOfFrames = 3;
+	int countFrames = 1; //Default
 	string filepath =
 			"/home/syadmin/Downloads/DelaunayTriangleTest/Untitled_Folder/";
 	string filename = "0000";
@@ -62,11 +62,16 @@ int main(int argc, char** argv) {
 	 * Name of images - filename
 	 * Pupil data points - pupils
 	 */
-	if(argc != 0) filepath = argv[0];
+	//should support cmd line prompt - not tested
+	/*
+	if (argc != 0)
+			filepath = argv[0];
+	*/
 	while (countFrames <= numOfFrames) {
 		//extension type
 		ostringstream convert;
 		convert << countFrames;
+		//file type change if need
 		filename = convert.str() + ".bmp";
 		if (countFrames < 1000) {
 			//caps at 4 digits
@@ -91,6 +96,7 @@ int main(int argc, char** argv) {
 		//read in format: x y
 
 		//extension type
+
 		filename = convert.str() + ".txt";
 		if (countFrames < 1000) {
 			//caps at 4 digits
@@ -121,6 +127,7 @@ int main(int argc, char** argv) {
 			draw_point(img_clone, *it, points_color);
 		}
 		//extension type
+		//file type change if need
 		filename = convert.str() + ".bmp";
 		if (countFrames < 1000) {
 			//caps at 4 digits
