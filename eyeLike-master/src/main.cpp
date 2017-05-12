@@ -19,8 +19,8 @@
 void detectAndDisplay( cv::Mat frame );
 
 /** Global variables */
-//-- Needs opencv/data/haarscascades path
-cv::String face_cascade_name = "/usr/local/etc/OpenFace/classifiers/haarcascade_frontalface_alt.xml";
+//-- Needs "haarcascade_frontalface_alt.xml" to even run
+cv::String face_cascade_name = "haarcascade_frontalface_alt.xml";
 cv::CascadeClassifier face_cascade;
 std::string main_window_name = "Capture - Face detection";
 std::string face_window_name = "Capture - Face";
@@ -36,7 +36,6 @@ cv::Point currentRightPupil = cv::Point(0,0);
 int main( int argc, const char** argv ) {
    //if no arguments
   if(argc > 1) {
-  printf("address: %s" , argv[1]);
    //Demo image
   cv::String address = argv[1];
 
@@ -61,7 +60,6 @@ int main( int argc, const char** argv ) {
   // Testers, check for eyes - remove later
   line(frame, cv::Point(0,0), currentLeftPupil, 1234);
   line(frame, cv::Point(0,0), currentRightPupil, 1234);
-  imwrite("/home/syadmin/Downloads/testTemp.png", frame);
  
   /*
    * Add to Database

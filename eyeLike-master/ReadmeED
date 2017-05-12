@@ -1,0 +1,10 @@
+Theortically the build folder should be enough to run but the rest are in case changes are needed.
+Changes are made
+cd ~/build
+make
+cmake ../
+
+Changes should be done within the main.cpp
+Run from 
+cd ~/build
+./bin/eyeLike path
