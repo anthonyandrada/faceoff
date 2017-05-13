@@ -14,6 +14,9 @@
         <?php
         $message = "";
         define ('SITE_ROOT', realpath(dirname(__FILE__)));
+        if ($_SERVER["REQUEST_METHOD"] == "POST") {
+            $username = $_POST["username"];
+        }
         if(isset($_POST['submit'])) {
             $fileName = basename($_FILES['filename']['name']);
             //check extension that was provided before actually uploading the file
@@ -23,7 +26,7 @@
                 $alreadyExist = checkAlreadyExist($fileName);
                 //continue is filename is not in database
                 if($alreadyExist == 0) {
-                    $finalDest = SITE_ROOT . "/video/" . basename($_FILES['filename']['name']);
+                    $finalDest = SITE_ROOT . "/" . $username . "/video/" . basename($_FILES['filename']['name']);
                     $tempName = $_FILES['filename']['tmp_name'];
                     //actually check if the file is a video
                     $mimetype = mime_content_type($tempName);
@@ -52,7 +55,7 @@
         //------------------------ FUNCTIONS BELOW ------------------------
 
         function extractFrames($path) {
-            $folder = SITE_ROOT . "/extractedFrames/" . pathinfo($path, PATHINFO_FILENAME);
+            $folder = SITE_ROOT . "/" . $username . "/extractedFrames/" . pathinfo($path, PATHINFO_FILENAME);
             shell_exec("mkdir -p '$folder'");
             shell_exec("ffmpeg -v quiet -i '$path' '$folder'/%04d.png -hide_banner");
             shell_exec("chmod 755 '$folder'/");
@@ -62,8 +65,8 @@
 
         function storeToDB($fileName, $metadata) {
             $db = connectToDB();
-            //uuid, filename, frames, width, height, fps, username
-            $query = "INSERT INTO video VALUES(uuid_generate_v4(), '$fileName', $metadata[2], $metadata[1], $metadata[0], $metadata[3], 'fakeusername')";
+            //frames, width, height, fps, username, filename
+            $query = "INSERT INTO video (frames, width, height, fps, username, filename) VALUES($metadata[2], $metadata[1], $metadata[0], $metadata[3], '$username', '$filename')";
             $result = pg_query($db, $query);
             pg_close($db);
             return 0;
@@ -100,7 +103,7 @@
 
         //connect to DB
         function connectToDB() {
-            $host        = "host=127.0.0.1";
+            $host        = "host=localhost";
             $port        = "port=5432";
             $dbname      = "dbname=cs160";
             $credentials = "user=postgres password=student";
@@ -127,10 +130,10 @@
 
         function checkAlreadyExist($fileName) {
             $db = connectToDB();
-            $query = "SELECT filename FROM video WHERE filename='$fileName'";
+            $query = "SELECT filename FROM video WHERE filename='$fileName' AND username='$username'";
             $result = pg_query($db, $query);
             while($row = pg_fetch_row($result)) {
-                if(strcmp($row[0], $fileName) !== 0) {
+                if(strcmp($row[0], $fileName) == 0) {
                     return 1;
                 }
             }
@@ -157,7 +160,7 @@
                                 <li><a href="#">Action</a></li>
                                 <li><a href="#">Action</a></li>
                                 <li role="separator" class="divider"></li>
-                                <li><a href="#">Action</a></li>
+                                <li><a href="http://faceoff.ddns.net">Sign Out</a></li>
                             </ul>
                         </li>
                     </ul>
@@ -170,7 +173,7 @@
             <div class="jumbotron text-center">
                 <div class="container">
                     <br>
-                    <h1>FACE OFF - Members Area :)</h1>
+                    <h1>FACE OFF - Members Area</h1>
                     <p>Upload videos here!</p>
                     <br>
                 </div>
@@ -208,29 +211,29 @@
                     </tr>
                     <?php
                     $db = connectToDB();
-                    $query = "SELECT * FROM video WHERE username='fakeusername'";
+                    $query = "SELECT * FROM video WHERE username='$username'";
                     $result = pg_query($db, $query);
-                    //uuid | filename | frames | width | height | fps | username | processed
+                    //video_id | frames | width | height | fps | username | processed | filename
                     while($row = pg_fetch_row($result)) {
-                        $filename = explode(".", $row[1]);
-                        $directory = "extractedFrames/" . $filename[0];
+                        $filename = explode(".", $row[7]);
+                        $directory = "/" . $username . "/extractedFrames/" . $filename[0];
                         $thumbnail = $directory . "/0001.png";
-                        $vidFile = "video/" . $row[1];
+                        $vidFile = "/" . $username . "/video/" . $row[7];
                         $numFiles = shell_exec("ls $directory | wc -l");
 
                         //WRITE HTML
                         echo "<tr>";
                         echo "<td>
-                        <a data-fancybox class='thumbnail'rel='lightbox' title='$row[1]' data-poster='$thumbnail' href='$vidFile'><img class='img-responsive' alt='Image...' src='$thumbnail' /></a>
+                        <a data-fancybox class='thumbnail'rel='lightbox' title='$row[7]' data-poster='$thumbnail' href='$vidFile'><img class='img-responsive' alt='Image...' src='$thumbnail' /></a>
                         </td>";
-                        echo "<td>" . $row[1] . "</td>"; //filename
+                        echo "<td>" . $row[7] . "</td>"; //filename
                         if($row[7] == 'f') {
-                            if(strcmp(trim($numFiles), $row[2]) == 0) {
-                                $query = "update video set processed = true where filename = '$row[1]'";
+                            if(strcmp(trim($numFiles), $row[1]) == 0) {
+                                $query = "update video set processed = true where filename = '$row[7]'";
                                 pg_query($db, $query);
                                 echo "<td>Yes</td>";
                             } else {
-                                echo "<td>" . number_format(($numFiles / (float)($row[2])) * 100, 2) . "% Processed</td>";
+                                echo "<td>" . number_format(($numFiles / (float)($row[1])) * 100, 2) . "% Processed</td>";
                             }
                         } else {
                             echo "<td>Yes</td>";

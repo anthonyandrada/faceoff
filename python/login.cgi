@@ -1,12 +1,10 @@
 #!/usr/bin/python
 
-# Import modules for CGI handling
-import cgi, cgitb, datetime, os, psycopg2
+# Import modules for CGI handling, Date/Time/IP, PostGres, URL handling
+import cgi, cgitb, datetime, os, psycopg2, urllib, urllib2
 # Import modules for AES encryption
 from Crypto.Cipher import AES
 from aes import AESCipher
-# Import modules for getting IP
-from urllib2 import urlopen
 
 # CGI traceback
 cgitb.enable(display=1, logdir='/cgi-logs', context=5, format='html')
@@ -28,9 +26,12 @@ except:
 else:
     if form.getvalue('password') == e.decrypt(result[0]):
         message = '<h1>User %s logged in.</h1>' % (username)
-        redirect = "Location:http://faceoff.ddns.net/upload.php"
-        token = "?username="
-        redirect = redirect + token + username
+        mydata=[('username',username)]    #The first is the var name the second is the value
+        mydata=urllib.urlencode(mydata)
+        path='http://faceoff.ddns.net/upload.php'    #the url you want to POST to
+        req=urllib2.Request(path, mydata)
+        req.add_header("Content-type", "application/x-www-form-urlencoded")
+        page=urllib2.urlopen(req).read()
         # fetch client IP address
         ip = os.environ["REMOTE_ADDR"]
         # read current datetime stamp, strip milliseconds
@@ -41,7 +42,7 @@ else:
     else:
         message = '<h1>Error: Incorrect password.</h1>'
         
-print redirect #placeholder, will update once sessions are implemented
+print page
 print # to end the CGI response headers.
 # HTML code
 print "Content-type:text/html\r\n\r\n"
