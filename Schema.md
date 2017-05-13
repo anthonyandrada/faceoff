@@ -12,7 +12,8 @@
 ###### FK username references profile
 | Field Name | Data Type                  |
 |------------|----------------------------|
-| uuid       | uuid not null primary key  |
+| video_id   | bigint not null primary key|
+| filename   | text not null              |
 | frames     | integer not null           |
 | width      | integer not null           |
 | height     | integer not null           |
@@ -25,7 +26,7 @@
 ###### Composite PK: video_id, image_id
 | Field Name | Data Type                   |
 |------------|-----------------------------|
-| uuid       | uuid not null primary key   |
+| video_id   | bigint not null primary key |
 | image_id   | bigint not null primary key |
 | filename   | text not null               |
 | yaw        | real not null               |
