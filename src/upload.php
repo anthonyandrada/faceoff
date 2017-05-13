@@ -21,7 +21,7 @@
             if($correctExtension) {
                 //check to see if filename already exists in the database
                 $alreadyExist = checkAlreadyExist($fileName);
-                //continue is filename is not in database
+                //continue if filename is not in database
                 if($alreadyExist == 0) {
                     $finalDest = SITE_ROOT . "/video/" . basename($_FILES['filename']['name']);
                     $tempName = $_FILES['filename']['tmp_name'];
@@ -33,13 +33,14 @@
                         $result = move_uploaded_file($tempName, $finalDest);
                     }
                     if($result) {
+                        //====== finish doing everything else ======
                         $message = "Upload successful!!";
                         //Get metadata of file
                         $metadata = getMetadata($finalDest);
                         //Store metadata and vidname into db
                         storeToDB($fileName, $metadata);
                         //extract the frames to a folder
-                        extractFrames($finalDest);
+//                        extractFrames($finalDest);
                     } else {
                         $message = "Upload failed!!";
                     }
@@ -170,8 +171,8 @@
             <div class="jumbotron text-center">
                 <div class="container">
                     <br>
-                    <h1>FACE OFF - Members Area :)</h1>
-                    <p>Upload videos here!</p>
+                    <h1>FACE OFF - Control Panel</h1>
+                    <p>Upload videos and stuff here!</p>
                     <br>
                 </div>
             </div>
