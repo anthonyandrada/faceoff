@@ -13,13 +13,13 @@
 | Field Name | Data Type                  |
 |------------|----------------------------|
 | video_id   | bigint not null primary key|
-| filename   | text not null              |
 | frames     | integer not null           |
 | width      | integer not null           |
 | height     | integer not null           |
 | fps        | real not null              |
 | username   | char(24) not null          |
 | processed  | boolean default false      |
+| filename   | text not null              |
 
 ## image
 ###### FK video_id references video
