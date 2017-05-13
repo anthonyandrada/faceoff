@@ -1,0 +1,7 @@
+To Run
+./DelaunayTriangle path
+
+tell it specific path file i.e:
+../../DelaunayTriangleTest2/Untitled_Folder/
+need / at the end else it'll recreate the folder
+

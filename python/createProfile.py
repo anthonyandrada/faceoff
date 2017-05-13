@@ -21,10 +21,10 @@ class createProfile(object):
             with conn.cursor() as curs:
                 curs.execute("SELECT COUNT(*) FROM profile WHERE username = %s", (self.username,))
                 result = curs.fetchone() 
-                if result[0] !=0:
-                    return False
-                else:
-                    return True
+        if result[0] !=0:
+            return False
+        else:
+            return True
     
     def register_user(self):
         with psycopg2.connect("dbname='cs160' user='postgres' host='localhost' password='student'") as conn:
