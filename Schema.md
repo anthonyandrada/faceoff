@@ -12,20 +12,21 @@
 ###### FK username references profile
 | Field Name | Data Type                  |
 |------------|----------------------------|
-| uuid       | uuid not null primary key  |
+| video_id   | bigint not null primary key|
 | frames     | integer not null           |
 | width      | integer not null           |
 | height     | integer not null           |
 | fps        | real not null              |
 | username   | char(24) not null          |
 | processed  | boolean default false      |
+| filename   | text not null              |
 
 ## image
 ###### FK video_id references video
 ###### Composite PK: video_id, image_id
 | Field Name | Data Type                   |
 |------------|-----------------------------|
-| uuid       | uuid not null primary key   |
+| video_id   | bigint not null primary key |
 | image_id   | bigint not null primary key |
 | filename   | text not null               |
 | yaw        | real not null               |
