@@ -1,0 +1,2 @@
+./FaceLandmarkImg -fdir faces -ofdir landmark
+
