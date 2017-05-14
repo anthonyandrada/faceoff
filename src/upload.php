@@ -13,17 +13,25 @@
     <body>
         <?php
         $message = "";
+        $username = "cecilexpham";
         define ('SITE_ROOT', realpath(dirname(__FILE__)));
+        //if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        //    $username = $_POST["username"];
+        //} else { $username = "cecilexpham";
+        // }
         if(isset($_POST['submit'])) {
             $fileName = basename($_FILES['filename']['name']);
             //check extension that was provided before actually uploading the file
             $correctExtension = checkExtension($fileName);
             if($correctExtension) {
                 //check to see if filename already exists in the database
-                $alreadyExist = checkAlreadyExist($fileName);
-                //continue if filename is not in database
+                $alreadyExist = checkAlreadyExist($fileName, $username);
+                //continue is filename is not in database
                 if($alreadyExist == 0) {
-                    $finalDest = SITE_ROOT . "/video/" . basename($_FILES['filename']['name']);
+                    $newfolder = SITE_ROOT . "/video/{$username}";
+                    shell_exec("mkdir -p '$newfolder'");
+                    shell_exec("chmod 755 '$newfolder'");
+                    $finalDest = SITE_ROOT . "/video/{$username}/" . basename($_FILES['filename']['name']);
                     $tempName = $_FILES['filename']['tmp_name'];
                     //actually check if the file is a video
                     $mimetype = mime_content_type($tempName);
@@ -38,9 +46,13 @@
                         //Get metadata of file
                         $metadata = getMetadata($finalDest);
                         //Store metadata and vidname into db
-                        storeToDB($fileName, $metadata);
+                        storeToDB($fileName, $metadata, $username);
                         //extract the frames to a folder
-                        //                        extractFrames($finalDest);
+                        extractFrames($finalDest, $username);
+                        //put points onto frames
+                        processFrames($finalDest, $username);
+                        //merge and output final video
+                        mergeFrames($metadata[3], $fileName, $finalDest, $username);
                     } else {
                         $message = "Upload failed!!";
                     }
@@ -52,8 +64,8 @@
 
         //------------------------ FUNCTIONS BELOW ------------------------
 
-        function extractFrames($path) {
-            $folder = SITE_ROOT . "/extractedFrames/" . pathinfo($path, PATHINFO_FILENAME);
+        function extractFrames($path, $username) {
+            $folder = SITE_ROOT . "/extractedFrames/{$username}/" . pathinfo($path, PATHINFO_FILENAME);
             shell_exec("mkdir -p '$folder'");
             shell_exec("ffmpeg -v quiet -i '$path' '$folder'/%04d.png -hide_banner");
             shell_exec("chmod 755 '$folder'/");
@@ -61,10 +73,30 @@
             return 0;
         }
 
-        function storeToDB($fileName, $metadata) {
+        function processFrames($path, $username) {
+            //JUST COPYING IMAGES OVER TO ANOTHER FOLDER FOR NOW!!!
+            $source = SITE_ROOT . "/extractedFrames/{$username}/" . pathinfo($path, PATHINFO_FILENAME);
+            $dest = SITE_ROOT . "/processedFrames/{$username}/";
+            shell_exec("mkdir -p '$dest'");
+            shell_exec("cp -R '$source' '$dest'");
+            //USE OPENFACE TO PUT POINTS ONTO THE IMAGES
+            return 0;
+        }
+
+        function mergeFrames($avgFPS, $fileName, $path, $username) {
+            $folder = SITE_ROOT . "/processedFrames/{$username}/" . pathinfo($path, PATHINFO_FILENAME);
+            $output = SITE_ROOT . "/outputVideos/{$username}/";
+            shell_exec("mkdir -p '$output'");
+            $fps = explode("/", $avgFPS);
+            $averageFPS = $fps[0]/$fps[1];
+            shell_exec("ffmpeg -framerate $averageFPS -i '$folder/%04d.png' '$output/$fileName'");
+            return 0;
+        }
+
+        function storeToDB($fileName, $metadata, $username) {
             $db = connectToDB();
-            //uuid, filename, frames, width, height, fps, username
-            $query = "INSERT INTO video VALUES(uuid_generate_v4(), '$fileName', $metadata[2], $metadata[1], $metadata[0], $metadata[3], 'fakeusername')";
+            //frames, width, height, fps, username, filename
+            $query = "INSERT INTO video (frames, width, height, fps, username, filename) VALUES($metadata[2], $metadata[1], $metadata[0], $metadata[3], '$username', '$fileName')";
             $result = pg_query($db, $query);
             pg_close($db);
             return 0;
@@ -101,7 +133,7 @@
 
         //connect to DB
         function connectToDB() {
-            $host        = "host=127.0.0.1";
+            $host        = "host=localhost";
             $port        = "port=5432";
             $dbname      = "dbname=cs160";
             $credentials = "user=postgres password=student";
@@ -126,12 +158,12 @@
             return 0;
         }
 
-        function checkAlreadyExist($fileName) {
+        function checkAlreadyExist($fileName, $username) {
             $db = connectToDB();
-            $query = "SELECT filename FROM video WHERE filename='$fileName'";
+            $query = "SELECT COUNT(*) FROM video WHERE filename='$fileName' AND username='$username'";
             $result = pg_query($db, $query);
             while($row = pg_fetch_row($result)) {
-                if(strcmp($row[0], $fileName) !== 0) {
+                if($row[0] > 0) {
                     return 1;
                 }
             }
@@ -156,9 +188,8 @@
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Menu <span class="caret"></span></a>
                             <ul class="dropdown-menu">
                                 <li><a href="#">Action</a></li>
-                                <li><a href="#">Action</a></li>
                                 <li role="separator" class="divider"></li>
-                                <li><a href="#">Action</a></li>
+                                <li><a href="http://faceoff.ddns.net">Sign Out</a></li>
                             </ul>
                         </li>
                     </ul>
@@ -171,8 +202,8 @@
             <div class="jumbotron text-center">
                 <div class="container">
                     <br>
-                    <h1>FACE OFF - Control Panel</h1>
-                    <p>Upload videos and stuff here!</p>
+                    <h1>FACE OFF - Members Area</h1>
+                    <p><?php echo "Hi {$username}!"; ?></p>
                     <br>
                 </div>
             </div>
@@ -213,29 +244,29 @@
                     </tr>
                     <?php
                     $db = connectToDB();
-                    $query = "SELECT * FROM video WHERE username='fakeusername'";
+                    $query = "SELECT * FROM video WHERE username='$username'";
                     $result = pg_query($db, $query);
-                    //uuid | filename | frames | width | height | fps | username | processed
+                    //video_id | frames | width | height | fps | username | processed | filename
                     while($row = pg_fetch_row($result)) {
-                        $filename = explode(".", $row[1]);
-                        $directory = "extractedFrames/" . $filename[0];
+                        $filename = explode(".", $row[7]);
+                        $directory = "/extractedFrames/{$username}/{$filename[0]}";
                         $thumbnail = $directory . "/0001.png";
-                        $vidFile = "video/" . $row[1];
-                        $numFiles = shell_exec("ls $directory | wc -l");
+                        $vidFile = "/video/{$username}/" . $row[7];
+                        $numFiles = shell_exec("ls '$directory' | wc -l");
 
                         //WRITE HTML
                         echo "<tr>";
                         echo "<td>
-                        <a data-fancybox class='thumbnail'rel='lightbox' title='$row[1]' data-poster='$thumbnail' href='$vidFile'><img class='img-responsive' alt='Image...' src='$thumbnail' /></a>
+                        <a data-fancybox class='thumbnail'rel='lightbox' title='$row[7]' data-poster='$thumbnail' href='$vidFile'><img class='img-responsive' alt='Image...' src='$thumbnail' /></a>
                         </td>";
-                        echo "<td>" . $row[1] . "</td>"; //filename
-                        if($row[7] == 'f') {
-                            if(strcmp(trim($numFiles), $row[2]) == 0) {
-                                $query = "update video set processed = true where filename = '$row[1]'";
+                        echo "<td>" . $row[7] . "</td>"; //filename
+                        if($row[6] == 'f') {
+                            if(strcmp(trim($numFiles), $row[1]) != 0) {
+                                $query = "UPDATE video SET processed = 'true' WHERE filename = '$row[7]' AND username = '$username'";
                                 pg_query($db, $query);
                                 echo "<td>Yes</td>";
                             } else {
-                                echo "<td>" . number_format(($numFiles / (float)($row[2])) * 100, 2) . "% Processed</td>";
+                                echo "<td>" . number_format((trim($numFiles) / (float)($row[1])) * 100, 2) . "% Uploaded</td>";
                             }
                         } else {
                             echo "<td>Yes</td>";
