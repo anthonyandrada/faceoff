@@ -18,11 +18,11 @@
 | height       | integer not null           |
 | fps          | real not null              |
 | username     | char(24) not null          |
-| processed    | boolean default false      |
 | filename     | text not null              |
-| fd_processed | boolean default false      |
-| pd_processed | boolean default false      |
-| dt_processed | boolean default fasle      |
+| fr_processed | integer default 0          |
+| fd_processed | integer default 0          |
+| pd_processed | integer default 0          |
+| dt_processed | integer default 0          |
 
 ## image
 ###### FK video_id references video
