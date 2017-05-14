@@ -32,13 +32,13 @@
 | video_id   | bigint not null primary key |
 | image_id   | bigint not null primary key |
 | filename   | text not null               |
-| yaw        | real not null               |
-| pitch      | real not null               |
-| roll       | real not null               |
-| of_left    | point not null              |
-| of_right   | point not null              |
-| timm_left  | point not null              |
-| timm_right | point not null              |
-| data_1     | point not null              |
+| yaw        | real default 0              |
+| pitch      | real default 0              |
+| roll       | real default 0              |
+| of_left    | point default '(0,0)'       |
+| of_right   | point default '(0,0)'       |
+| timm_left  | point default '(0,0)'       |
+| timm_right | point default '(0,0)'       |
+| data_1     | point default '(0,0)'       |
 | ...        | ...                         |
-| data_68    | point not null              |
+| data_68    | point default '(0,0)'       |
