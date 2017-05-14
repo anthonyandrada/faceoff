@@ -40,7 +40,7 @@
                         //Store metadata and vidname into db
                         storeToDB($fileName, $metadata);
                         //extract the frames to a folder
-//                        extractFrames($finalDest);
+                        //                        extractFrames($finalDest);
                     } else {
                         $message = "Upload failed!!";
                     }
@@ -193,7 +193,11 @@
 
                         </div>
                         <input type="submit" onclick="uploadFile()" name="submit" value="submit"/>
-                        <div id="progressNumber"></div>
+                        <div class="bar">
+                            <span class="bar-fill">
+                                <span class="bar-text">Upload Progress</span>
+                            </span>
+                        </div>
                     </div>
                 </div>
             </form>
@@ -250,5 +254,6 @@
         <script src="js/bootstrap.min.js"></script>
         <link href="css/custom.css" rel="stylesheet">
         <script src="js/custom.js"></script>
+        <script src="js/progress.js"></script>
     </body>
 </html>

@@ -139,6 +139,34 @@ input:-ms-input-placeholder {
     font-size: 120%; 
 }
 
+span{
+  white-space: nowrap;
+}
+
+.bar {
+    width: 100%;
+    background-color: darkgrey;
+    padding: 1px;
+    border-radius: 5px;
+    margin-top: 10px;
+    margin-bottom: 15px;
+    box-sizing: border-box;
+}
+
+.bar-fill {
+    height: 25px;
+    display: block;
+    background-color: aqua;
+    border-radius: 5px;
+    width: 0%;
+    transition: width 0.8s ease;
+}
+
+.bar-text {
+    padding: 0px;
+    color: white;
+}
+
 @media (min-aspect-ratio: 16/9) {
     .background-video {
         height: 300%;
