@@ -221,10 +221,10 @@
                     //video_id | frames | width | height | fps | username | processed | filename
                     while($row = pg_fetch_row($result)) {
                         $filename = explode(".", $row[7]);
-                        $directory = "/extractedFrames/{$username}/" . $filename[0];
+                        $directory = "/extractedFrames/{$username}/{$filename[0]}";
                         $thumbnail = $directory . "/0001.png";
                         $vidFile = "/video/{$username}/" . $row[7];
-                        $numFiles = shell_exec("ls $directory | wc -l");
+                        $numFiles = shell_exec("ls '$directory' | wc -l");
 
                         //WRITE HTML
                         echo "<tr>";
@@ -232,13 +232,13 @@
                         <a data-fancybox class='thumbnail'rel='lightbox' title='$row[7]' data-poster='$thumbnail' href='$vidFile'><img class='img-responsive' alt='Image...' src='$thumbnail' /></a>
                         </td>";
                         echo "<td>" . $row[7] . "</td>"; //filename
-                        if($row[7] == 'f') {
-                            if(strcmp(trim($numFiles), $row[1]) == 0) {
-                                $query = "update video set processed = true where filename = '$row[7]'";
+                        if($row[6] == 'f') {
+                            if(strcmp(trim($numFiles), $row[1]) != 0) {
+                                $query = "UPDATE video SET processed = 'true' WHERE filename = '$row[7]' AND username = '$username'";
                                 pg_query($db, $query);
                                 echo "<td>Yes</td>";
                             } else {
-                                echo "<td>" . number_format(($numFiles / (float)($row[1])) * 100, 2) . "% Processed</td>";
+                                echo "<td>" . number_format((trim($numFiles) / (float)($row[1])) * 100, 2) . "% Uploaded</td>";
                             }
                         } else {
                             echo "<td>Yes</td>";
