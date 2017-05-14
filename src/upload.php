@@ -13,11 +13,13 @@
     <body>
         <?php
         $message = "";
-        $username = "cecilexpham";
+        //if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        //    $username = $_POST["username"];
+        //}
+        //else {
+            $username = "cecilexpham";
+        //}
         define ('SITE_ROOT', realpath(dirname(__FILE__)));
-        if ($_SERVER["REQUEST_METHOD"] == "POST") {
-            $username = test_input($_POST["username"]);
-        }
         if(isset($_POST['submit'])) {
             $fileName = basename($_FILES['filename']['name']);
             //check extension that was provided before actually uploading the file
@@ -47,6 +49,10 @@
                         storeToDB($fileName, $metadata, $username);
                         //extract the frames to a folder
                         extractFrames($finalDest, $username);
+                        faceData($finalDest, $username, $fileName);
+                        //eyelike function
+                        //delaney triangle
+                        //rejoin images
                     } else {
                         $message = "Upload failed!!";
                     }
@@ -145,12 +151,40 @@
             return 0;
         }
 
-        function test_input($data) {
-            $data = trim($data);
-            $data = stripslashes($data);
-            $data = htmlspecialchars($data);
-            return $data;
-        }
+        function faceData($path, $username, $fileName) {
+            $folder = SITE_ROOT . "/extractedFrames/{$username}/" . pathinfo($path, PATHINFO_FILENAME);
+            shell_exec("mkdir -p '$folder'/landmark");
+            shell_exec("cd /var/www/html/FaceLandmarkImage_exe; ./FaceLandmarkImg -fdir '$folder' -ofdir '$folder'/landmark");
+            //shell_exec("chmod 755 '$folder'/");            
+            $db = connectToDB();
+            $query = "SELECT * FROM video WHERE filename='$fileName' AND username='$username'";
+            $result = pg_query($db, $query);
+            $row = pg_fetch_row($result);
+            $count = $row[1];
+            $vID = $row[0];
+            for ($f = 1; $f < $count+1; $f++)
+            {
+                $padF = sprintf("%04d", $f);
+                $query = "INSERT INTO image (video_id, image_id, filename) VALUES ('$vID', '$f', '$fileName/$padF.png')";
+                $result = pg_query($db, $query);
+                $file = fopen("$folder/landmark/$padF.png_landmark.txt", "r"); 
+                $data = explode(",", fgets($file));
+                $x = 1;
+                $y = 2;
+                for ($p = 1; $p < 69; $p++)
+                {
+                    $query = "UPDATE image SET data_$p = '($data[$x],$data[$y])' WHERE video_id = '$vID' AND image_id = '$f'";
+                    $result = pg_query($db, $query);
+                    $x++;
+                    $x++;
+                    $y++;
+                    $y++;
+                 }
+                fclose($file);
+            }
+            pg_close($db);
+            return 0;
+         }
 
         ?>
 
@@ -168,9 +202,9 @@
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Menu <span class="caret"></span></a>
                             <ul class="dropdown-menu">
-                                <li><a href="#">Action</a></li>
-                                <li><a href="#">Action</a></li>
-                                <li role="separator" class="divider"></li>
+                               <!-- <li><a href="#">Action</a></li>
+                                <li><a href="#">Action</a></li> 
+                                <li role="separator" class="divider"></li> -->
                                 <li><a href="http://faceoff.ddns.net">Sign Out</a></li>
                             </ul>
                         </li>
@@ -217,38 +251,55 @@
                 <table class="table table-striped">
                     <tr class="warning">
                         <th class='td-thumb'>Thumbnail</th>
-                        <th>File Name</th>
-                        <th>Processed</th>
+                        <th>Filename</th>
+                        <th>Frames Extracted</th>
+                        <th>Face Data Processed</th>
+                        <th>Pupil Data Processed</th>
+                        <th>Delaunay Triangulation</th>
                     </tr>
                     <?php
                     $db = connectToDB();
                     $query = "SELECT * FROM video WHERE username='$username'";
                     $result = pg_query($db, $query);
-                    //video_id | frames | width | height | fps | username | processed | filename
+                    //video_id | frames | width | height | fps | username | filename | fr_processed | fd_processed | pd_processed | dt_processed
                     while($row = pg_fetch_row($result)) {
-                        $filename = explode(".", $row[7]);
-                        $directory = "/extractedFrames/{$username}/{$filename[0]}";
+                        $filename = explode(".", $row[6]);
+                        $directory = "./extractedFrames/{$username}/{$filename[0]}";
                         $thumbnail = $directory . "/0001.png";
-                        $vidFile = "/video/{$username}/" . $row[7];
-                        $numFiles = shell_exec("ls '$directory' | wc -l");
+                        $vidFile = "/video/{$username}/" . $row[6];
+                        $numFiles = trim(shell_exec("ls $directory | wc -l"));
 
                         //WRITE HTML
                         echo "<tr>";
                         echo "<td>
-                        <a data-fancybox class='thumbnail'rel='lightbox' title='$row[7]' data-poster='$thumbnail' href='$vidFile'><img class='img-responsive' alt='Image...' src='$thumbnail' /></a>
+                        <a data-fancybox class='thumbnail'rel='lightbox' title='$row[6]' data-poster='$thumbnail' href='$vidFile'><img class='img-responsive' alt='Image...' src='$thumbnail' /></a>
                         </td>";
-                        echo "<td>" . $row[7] . "</td>"; //filename
-                        if($row[6] == 'f') {
-                            if(strcmp(trim($numFiles), $row[1]) != 0) {
-                                $query = "UPDATE video SET processed = 'true' WHERE filename = '$row[7]' AND username = '$username'";
-                                pg_query($db, $query);
-                                echo "<td>Yes</td>";
-                            } else {
-                                echo "<td>" . number_format((trim($numFiles) / (float)($row[1])) * 100, 2) . "% Uploaded</td>";
-                            }
-                        } else {
-                            echo "<td>Yes</td>";
+                        echo "<td>" . $row[6] . "</td>"; //filename
+                        if($row[7] < $row[1]) 
+                        {    //frames processed
+                           $query = "UPDATE video SET fr_processed = $numFiles WHERE filename = '$row[6]' AND username = '$username'";
+                           pg_query($db, $query);
+                           echo "<td>" . number_format(($row[7]/ (float)($row[1])) * 100, 2) . "% Complete</td>";
+                        } 
+                        else {
+                           echo "<td>Complete</td>";
                         }
+                        
+                        //face data processed
+                        echo "<td>";
+                        echo "0% Complete";
+                        echo "</td>";
+                        
+                        //pupil data processed
+                        echo "<td>";
+                        echo "0% Complete";
+                        echo "</td>";
+
+                        //delaunay triangulation
+                        echo "<td>";
+                        echo "0% Complete";
+                        echo "</td>";       
+
                         echo "</tr>";
                     }
                     pg_close($db);
