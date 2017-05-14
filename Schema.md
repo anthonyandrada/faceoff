@@ -10,16 +10,19 @@
 
 ## video 
 ###### FK username references profile
-| Field Name | Data Type                  |
-|------------|----------------------------|
-| video_id   | bigint not null primary key|
-| frames     | integer not null           |
-| width      | integer not null           |
-| height     | integer not null           |
-| fps        | real not null              |
-| username   | char(24) not null          |
-| processed  | boolean default false      |
-| filename   | text not null              |
+| Field Name   | Data Type                  |
+|--------------|----------------------------|
+| video_id     | bigint not null primary key|
+| frames       | integer not null           |
+| width        | integer not null           |
+| height       | integer not null           |
+| fps          | real not null              |
+| username     | char(24) not null          |
+| processed    | boolean default false      |
+| filename     | text not null              |
+| fd_processed | boolean default false      |
+| pd_processed | boolean default false      |
+| dt_processed | boolean default fasle      |
 
 ## image
 ###### FK video_id references video
