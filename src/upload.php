@@ -89,7 +89,7 @@
             shell_exec("mkdir -p '$output'");
             $fps = explode("/", $avgFPS);
             $averageFPS = $fps[0]/$fps[1];
-            shell_exec("ffmpeg -framerate $averageFPS -i '$folder/%04d.png' '$output/$fileName'");
+            shell_exec("ffmpeg -framerate $averageFPS -i '$folder/%04d.png' -c:v libx264 -pix_fmt yuv420p '$output/$fileName'");
             return 0;
         }
 
@@ -251,7 +251,7 @@
                         $filename = explode(".", $row[7]);
                         $directory = "/extractedFrames/{$username}/{$filename[0]}";
                         $thumbnail = $directory . "/0001.png";
-                        $vidFile = "/video/{$username}/" . $row[7];
+                        $vidFile = "/outputVideos/{$username}/" . $row[7];
                         $numFiles = shell_exec("ls '$directory' | wc -l");
 
                         //WRITE HTML
