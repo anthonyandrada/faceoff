@@ -9,22 +9,16 @@
         <!-- Bootstrap -->
         <link href="css/bootstrap.min.css" rel="stylesheet">
     </head>
-
     <body>
         <?php
         $message = "";
         //if ($_SERVER["REQUEST_METHOD"] == "POST") {
         //    $username = $_POST["username"];
-<<<<<<< HEAD
         //}
         //else {
             $username = "cecilexpham";
         //}
         define ('SITE_ROOT', realpath(dirname(__FILE__)));
-=======
-        //} else { $username = "cecilexpham";
-        // }
->>>>>>> 625984070ac85271cb0877b2d98fc51df32f456c
         if(isset($_POST['submit'])) {
             $fileName = basename($_FILES['filename']['name']);
             //check extension that was provided before actually uploading the file
@@ -55,17 +49,11 @@
                         storeToDB($fileName, $metadata, $username);
                         //extract the frames to a folder
                         extractFrames($finalDest, $username);
-<<<<<<< HEAD
                         faceData($finalDest, $username, $fileName);
-                        //eyelike function
-                        //delaney triangle
-                        //rejoin images
-=======
                         //put points onto frames
                         processFrames($finalDest, $username);
                         //merge and output final video
                         mergeFrames($metadata[3], $fileName, $finalDest, $username);
->>>>>>> 625984070ac85271cb0877b2d98fc51df32f456c
                     } else {
                         $message = "Upload failed!!";
                     }
@@ -188,7 +176,7 @@
             $folder = SITE_ROOT . "/extractedFrames/{$username}/" . pathinfo($path, PATHINFO_FILENAME);
             shell_exec("mkdir -p '$folder'/landmark");
             shell_exec("cd /var/www/html/FaceLandmarkImage_exe; ./FaceLandmarkImg -fdir '$folder' -ofdir '$folder'/landmark");
-            //shell_exec("chmod 755 '$folder'/");            
+            shell_exec("chmod 755 '$folder'/");            
             $db = connectToDB();
             $query = "SELECT * FROM video WHERE filename='$fileName' AND username='$username'";
             $result = pg_query($db, $query);
@@ -235,14 +223,8 @@
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Menu <span class="caret"></span></a>
                             <ul class="dropdown-menu">
-<<<<<<< HEAD
-                               <!-- <li><a href="#">Action</a></li>
                                 <li><a href="#">Action</a></li> 
-                                <li role="separator" class="divider"></li> -->
-=======
-                                <li><a href="#">Action</a></li>
                                 <li role="separator" class="divider"></li>
->>>>>>> 625984070ac85271cb0877b2d98fc51df32f456c
                                 <li><a href="http://faceoff.ddns.net">Sign Out</a></li>
                             </ul>
                         </li>
