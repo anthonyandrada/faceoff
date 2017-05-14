@@ -30,6 +30,7 @@ cv::Mat skinCrCbHist = cv::Mat::zeros(cv::Size(256, 256), CV_8UC1);
 cv::Point currentLeftPupil = cv::Point(0,0);
 cv::Point currentRightPupil = cv::Point(0,0);
 
+
 /**
  * @function main
  */
@@ -58,14 +59,17 @@ int main( int argc, const char** argv ) {
     
   releaseCornerKernels();
   // Testers, check for eyes - remove later
-  line(frame, cv::Point(0,0), currentLeftPupil, 1234);
-  line(frame, cv::Point(0,0), currentRightPupil, 1234);
+  //line(frame, cv::Point(0,0), currentLeftPupil, 1234);
+  //line(frame, cv::Point(0,0), currentRightPupil, 1234);
  
   /*
    * Add to Database
    * Point - currentLeftPupil
    * Point - currentRightPupil
    */
+    //Left x, left y, right x, right y
+   printf("%i,%i,%i,%i", currentLeftPupil.x, currentLeftPupil.y, currentRightPupil.x, currentRightPupil.y);
+
   } else {printf("no input"); }
   return 0;
 }
@@ -94,8 +98,9 @@ void findEyes(cv::Mat frame_gray, cv::Rect face) {
   cv::Point leftPupil = findEyeCenter(faceROI,leftEyeRegion,"Left Eye");
   cv::Point rightPupil = findEyeCenter(faceROI,rightEyeRegion,"Right Eye");
   // Final Readjustments
-  currentLeftPupil = cv::Point(currentLeftPupil.x + leftPupil.x, currentLeftPupil.y + leftPupil.y); 
-  currentRightPupil = cv::Point(currentRightPupil.x + rightPupil.x, currentRightPupil.y + rightPupil.y); 
+
+if(leftPupil != cv::Point(0,0)){  currentLeftPupil = cv::Point(currentLeftPupil.x + leftPupil.x, currentLeftPupil.y + leftPupil.y); } else {currentLeftPupil = cv::Point(0, 0);}
+if(rightPupil != cv::Point(0,0)){  currentRightPupil = cv::Point(currentRightPupil.x + rightPupil.x, currentRightPupil.y + rightPupil.y); } else {currentRightPupil = cv::Point(0, 0);}
   // get corner regions
   cv::Rect leftRightCornerRegion(leftEyeRegion);
   leftRightCornerRegion.width -= leftPupil.x;
