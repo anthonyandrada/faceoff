@@ -1,2 +1,4 @@
 /src/video/*
 /src/extractedFrames/*
+/src/outputVideos/*
+/src/processedFrames/*

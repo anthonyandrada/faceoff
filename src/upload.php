@@ -15,11 +15,16 @@
         $message = "";
         //if ($_SERVER["REQUEST_METHOD"] == "POST") {
         //    $username = $_POST["username"];
+<<<<<<< HEAD
         //}
         //else {
             $username = "cecilexpham";
         //}
         define ('SITE_ROOT', realpath(dirname(__FILE__)));
+=======
+        //} else { $username = "cecilexpham";
+        // }
+>>>>>>> 625984070ac85271cb0877b2d98fc51df32f456c
         if(isset($_POST['submit'])) {
             $fileName = basename($_FILES['filename']['name']);
             //check extension that was provided before actually uploading the file
@@ -42,6 +47,7 @@
                         $result = move_uploaded_file($tempName, $finalDest);
                     }
                     if($result) {
+                        //====== finish doing everything else ======
                         $message = "Upload successful!!";
                         //Get metadata of file
                         $metadata = getMetadata($finalDest);
@@ -49,10 +55,17 @@
                         storeToDB($fileName, $metadata, $username);
                         //extract the frames to a folder
                         extractFrames($finalDest, $username);
+<<<<<<< HEAD
                         faceData($finalDest, $username, $fileName);
                         //eyelike function
                         //delaney triangle
                         //rejoin images
+=======
+                        //put points onto frames
+                        processFrames($finalDest, $username);
+                        //merge and output final video
+                        mergeFrames($metadata[3], $fileName, $finalDest, $username);
+>>>>>>> 625984070ac85271cb0877b2d98fc51df32f456c
                     } else {
                         $message = "Upload failed!!";
                     }
@@ -70,6 +83,26 @@
             shell_exec("ffmpeg -v quiet -i '$path' '$folder'/%04d.png -hide_banner");
             shell_exec("chmod 755 '$folder'/");
             //good to have 644 permission for files, sensitive files = 700 permission
+            return 0;
+        }
+
+        function processFrames($path, $username) {
+            //JUST COPYING IMAGES OVER TO ANOTHER FOLDER FOR NOW!!!
+            $source = SITE_ROOT . "/extractedFrames/{$username}/" . pathinfo($path, PATHINFO_FILENAME);
+            $dest = SITE_ROOT . "/processedFrames/{$username}/";
+            shell_exec("mkdir -p '$dest'");
+            shell_exec("cp -R '$source' '$dest'");
+            //USE OPENFACE TO PUT POINTS ONTO THE IMAGES
+            return 0;
+        }
+
+        function mergeFrames($avgFPS, $fileName, $path, $username) {
+            $folder = SITE_ROOT . "/processedFrames/{$username}/" . pathinfo($path, PATHINFO_FILENAME);
+            $output = SITE_ROOT . "/outputVideos/{$username}/";
+            shell_exec("mkdir -p '$output'");
+            $fps = explode("/", $avgFPS);
+            $averageFPS = $fps[0]/$fps[1];
+            shell_exec("ffmpeg -framerate $averageFPS -i '$folder/%04d.png' '$output/$fileName'");
             return 0;
         }
 
@@ -202,9 +235,14 @@
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Menu <span class="caret"></span></a>
                             <ul class="dropdown-menu">
+<<<<<<< HEAD
                                <!-- <li><a href="#">Action</a></li>
                                 <li><a href="#">Action</a></li> 
                                 <li role="separator" class="divider"></li> -->
+=======
+                                <li><a href="#">Action</a></li>
+                                <li role="separator" class="divider"></li>
+>>>>>>> 625984070ac85271cb0877b2d98fc51df32f456c
                                 <li><a href="http://faceoff.ddns.net">Sign Out</a></li>
                             </ul>
                         </li>
@@ -240,7 +278,11 @@
 
                         </div>
                         <input type="submit" onclick="uploadFile()" name="submit" value="submit"/>
-                        <div id="progressNumber"></div>
+                        <div class="bar">
+                            <span class="bar-fill">
+                                <span class="bar-text">Upload Progress</span>
+                            </span>
+                        </div>
                     </div>
                 </div>
             </form>
@@ -314,5 +356,6 @@
         <script src="js/bootstrap.min.js"></script>
         <link href="css/custom.css" rel="stylesheet">
         <script src="js/custom.js"></script>
+        <script src="js/progress.js"></script>
     </body>
 </html>
