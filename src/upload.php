@@ -15,10 +15,9 @@
         $message = "";
         $username = "cecilexpham";
         define ('SITE_ROOT', realpath(dirname(__FILE__)));
-        //if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        //    $username = $_POST["username"];
-        //} else { $username = "cecilexpham";
-       // }
+        if ($_SERVER["REQUEST_METHOD"] == "POST") {
+            $username = test_input($_POST["username"]);
+        }
         if(isset($_POST['submit'])) {
             $fileName = basename($_FILES['filename']['name']);
             //check extension that was provided before actually uploading the file
@@ -144,6 +143,13 @@
             }
             pg_close($db);
             return 0;
+        }
+
+        function test_input($data) {
+            $data = trim($data);
+            $data = stripslashes($data);
+            $data = htmlspecialchars($data);
+            return $data;
         }
 
         ?>
