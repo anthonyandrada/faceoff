@@ -47,6 +47,8 @@ int main(int argc, char** argv) {
 	string filepath =
 			"";
 	string filename = "0000";
+	string fileOut  = "";
+	string username = "";
 	Scalar delaunay_color(255, 255, 255), points_color(0, 0, 255);
 	/*
 	 * Query Database for:
@@ -63,14 +65,15 @@ int main(int argc, char** argv) {
 	 */
 	//Only Works if there is a parameter
 	if (argc > 1) {
-		filepath = argv[1];
+		filpath = argv[1];
+        	fileOut = argv[2];
 
 		while (countFrames <= numOfFrames) {
 			//extension type
 			ostringstream convert;
 			convert << countFrames;
 			//file type change if need
-			filename = convert.str() + ".bmp";
+			filename = convert.str() + ".png";
 			if (countFrames < 1000) {
 				//caps at 4 digits
 				while (filename.size() <= 7) {
@@ -94,26 +97,28 @@ int main(int argc, char** argv) {
 
 			//extension type
 
-			filename = convert.str() + ".txt";
+			filename = convert.str() + ".png_landmark.txt";
 			if (countFrames < 1000) {
 				//caps at 4 digits
-				while (filename.size() <= 7) {
+				while (filename.size() <= 19) {
 					filename = "0" + filename;
 				}
 			}
 			filename = filepath + filename;
+			
 			ifstream ifs(filename.c_str());
 			int x, y;
 			while (ifs >> x >> y) {
 				facial.push_back(Point2f(x, y));
 			}
+			ifs.close();
 			//extract pupil points
 			//Add all facial points to subdiv
 			for (vector<Point2f>::iterator it = facial.begin();
 					it != facial.end(); it++) {
 				subdiv.insert(*it);
 			}
-
+			convert.flush();
 			//Draw Delaunay
 			draw_delaunay(img_clone, subdiv, delaunay_color);
 
@@ -124,14 +129,14 @@ int main(int argc, char** argv) {
 			}
 			//extension type
 			//file type change if need
-			filename = convert.str() + ".bmp";
+			filename = convert.str() + ".png";
 			if (countFrames < 1000) {
 				//caps at 4 digits
 				while (filename.size() <= 7) {
 					filename = "0" + filename;
 				}
 			}
-			imwrite(filepath + "temp" + filename, img_clone);
+			imwrite(fileOut + filename, img_clone);
 			//Saves in directory
 			//name = "/../tempImage/image" + countFrames + ".png";
 
