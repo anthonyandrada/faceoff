@@ -49,9 +49,12 @@
                         storeToDB($fileName, $metadata, $username);
                         //extract the frames to a folder
                         extractFrames($finalDest, $username);
+                        //put points onto frames in DB
                         faceData($finalDest, $username, $fileName);
-                        //put points onto frames
-                        processFrames($finalDest, $username);
+                        //put pupil data onto frames in DB
+                        eyeLike($finalDest, $username, $fileName);
+                        //process frames with Delaunay triangle data
+                        processFrames($finalDest, $username); 
                         //merge and output final video
                         mergeFrames($metadata[3], $fileName, $finalDest, $username);
                     } else {
@@ -206,6 +209,32 @@
             pg_close($db);
             return 0;
          }
+        
+        function eyeLike($path, $username, $fileName) {
+            $folder = SITE_ROOT . "/extractedFrames/{$username}/" . pathinfo($path, PATHINFO_FILENAME);
+            $db = connectToDB();
+            $query = "SELECT * FROM video WHERE filename='$fileName' AND username='$username'";
+            $result = pg_query($db, $query);
+            $row = pg_fetch_row($result);
+            $count = $row[1];
+            $vID = $row[0];
+            for ($f = 1; $f < $count+1; $f++)
+            {
+                $padF = sprintf("%04d", $f);
+                $output = shell_exec("cd /var/www/html/eyeLike-master/build/bin; ./eyeLike '$folder'/'$padF'.png");
+                $data = explode(",", $output);
+                $x = $data[0];
+                $y = $data[1];
+                $query = "UPDATE image SET of_left = '($data[$x],$data[$y])' WHERE video_id = '$vID' AND image_id = '$f'";
+                $result = pg_query($db, $query);
+                $x = $data[2];
+                $y = $data[3];
+                $query = "UPDATE image SET of_right = '($data[$x],$data[$y])' WHERE video_id = '$vID' AND image_id = '$f'";
+                $result = pg_query($db, $query);
+            }
+            pg_close($db);
+            return 0;
+        }
 
         ?>
 
