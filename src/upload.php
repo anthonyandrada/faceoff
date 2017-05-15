@@ -53,7 +53,7 @@
                         faceData($finalDest, $username, $fileName);
                         //put pupil data onto frames in DB
                         eyeLike($finalDest, $username, $fileName);
-                        //process frames with Delaunay triangle data
+                        //process frames with Delaunay triangulation data
                         processFrames($finalDest, $username); 
                         //merge and output final video
                         mergeFrames($metadata[3], $fileName, $finalDest, $username);
@@ -77,7 +77,7 @@
             return 0;
         }
 
-        function processFrames($path, $username) {
+        function processFrames($path, $username, $fileName) {
             //JUST COPYING IMAGES OVER TO ANOTHER FOLDER FOR NOW!!!
             $source = SITE_ROOT . "/extractedFrames/{$username}/" . pathinfo($path, PATHINFO_FILENAME);
             $dest = SITE_ROOT . "/processedFrames/{$username}/";
