@@ -4,8 +4,8 @@
 import cgi, cgitb, datetime, os
 from createProfile import createProfile
 # Import modules for AES encryption
-from Crypto.Cipher import AES
-from aes import AESCipher
+#from Crypto.Cipher import AES
+#from aes import AESCipher
 # Import modules for getting IP
 from urllib2 import urlopen
 
@@ -22,10 +22,11 @@ name = first_name + " " + last_name
 # Get username from form data
 username = form.getvalue('username')
 # open encryption key file
-with open('/usr/lib/cgi-bin/key/aes.key', 'r') as file:
-    e = AESCipher(file.read())
+#with open('/usr/lib/cgi-bin/key/aes.key', 'r') as file:
+ #   e = AESCipher(file.read())
 # pass password from form data to encryption function
-password = e.encrypt(form.getvalue('password'))
+#password = e.encrypt(form.getvalue('password'))
+password = form.getvalue('password')
 # read current datetime stamp, strip milliseconds
 last_login = str(datetime.datetime.now()).split('.')[0]
 # fetch client IP address
